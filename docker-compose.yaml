@@ -2,11 +2,13 @@ version: '3'
 services:
 
   cover-letter:
+    container_name: cover-letter-generator
     build:
       context: .
-      dockerfile: cd .\dockerfile.dev
+      dockerfile: .\dockerfile.dev
       args:
-        - app=cover-letter-generator
+        - APP=cover-letter-generator
+    image: clg:latest
     restart: unless-stopped
     env_file:
       - .env
@@ -14,8 +16,9 @@ services:
       - intelli-network
     volumes:
       - /shared:/usr/src/app/
-    command: npm run start:dev microservice-books-club # overrides CMD from dockerfile
+    ports:
+      - "3002:4545"
 
 networks:
   intelli-network:
-    external: true
+    # external: true

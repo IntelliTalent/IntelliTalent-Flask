@@ -15,11 +15,10 @@ gunicorn cover_letter_generator_app_wsgi:app \
 	--error-logfile logs/cover_letter_generator_app.error.log \
 	--access-logfile logs/cover_letter_generator_app.access.log \
 	--capture-output \
-	--daemon \
-	--reload
+	--daemon
 sleep 1
 if [ -f pid ]; then
-    echo "	started master worker pid:$(cat pid)"
+	echo "	started master worker pid:$(cat pid)"
 else
 	echo "	failed starting master worker"
 fi

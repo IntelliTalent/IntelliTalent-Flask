@@ -1,10 +1,14 @@
 FROM python:3.8-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 RUN apk add --no-cache gcc musl-dev libffi-dev bash git
 
-COPY ./requirements.txt ./requirements.txt
+COPY ./requirements.txt requirements.txt
+
+RUN python -m venv venv
+
+RUN source venv/bin/activate
 
 RUN pip install --upgrade pip
 
@@ -14,8 +18,12 @@ ARG APP
 
 COPY ./services/${APP}/ .
 
-RUN chmod +x start
+RUN ls > waer.txt
 
-RUN chmod +x startDev
+RUN chmod +x ./start.bash
 
-RUN chmod +x stop
+RUN chmod +x ./startDev.bash
+
+RUN chmod +x ./stop.bash
+
+CMD [ "bash", "startDev.bash"]

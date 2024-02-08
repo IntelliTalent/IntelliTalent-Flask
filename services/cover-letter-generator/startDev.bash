@@ -15,7 +15,7 @@ gunicorn cover_letter_generator_app_wsgi:app \
 	--error-logfile logs/cover_letter_generator_app.error.log \
 	--access-logfile logs/cover_letter_generator_app.access.log \
 	--capture-output \
-	--daemon
+	--reload
 sleep 1
 if [ -f pid ]; then
     echo "	started master worker pid:$(cat pid)"

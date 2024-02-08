@@ -1,5 +1,5 @@
 from flask import (
-    Flask, 
+    Flask,
     jsonify,
 )
 from .index import (
@@ -11,3 +11,5 @@ def create_app():
 
     # called on app install on a store
     app.route("/", methods=["GET"])(main)
+
+    return app
