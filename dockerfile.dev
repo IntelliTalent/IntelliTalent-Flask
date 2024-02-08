@@ -1,0 +1,21 @@
+FROM python:3.8-alpine
+
+WORKDIR /usr/src/app
+
+RUN apk add --no-cache gcc musl-dev libffi-dev bash git
+
+COPY ./requirements.txt ./requirements.txt
+
+RUN pip install --upgrade pip
+
+RUN pip install -r requirements.txt
+
+ARG APP
+
+COPY ./services/${APP}/ .
+
+RUN chmod +x start
+
+RUN chmod +x startDev
+
+RUN chmod +x stop

@@ -1,0 +1,21 @@
+version: '3'
+services:
+
+  cover-letter:
+    build:
+      context: .
+      dockerfile: cd .\dockerfile.dev
+      args:
+        - app=cover-letter-generator
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - intelli-network
+    volumes:
+      - /shared:/usr/src/app/
+    command: npm run start:dev microservice-books-club # overrides CMD from dockerfile
+
+networks:
+  intelli-network:
+    external: true
