@@ -26,4 +26,4 @@ RUN chmod +x ./startDev.bash
 
 RUN chmod +x ./stop.bash
 
-CMD [ "bash", "startDev.bash"]
+CMD [ "python", "run.py"]

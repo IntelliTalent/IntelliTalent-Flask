@@ -11,14 +11,15 @@ services:
     image: clg:latest
     restart: unless-stopped
     env_file:
-      - .env
+      - ../.env
     networks:
       - intelli-network
     volumes:
       - /shared:/usr/src/app/
+      - ./services/cover-letter-generator:/usr/src/app/
     ports:
       - "3002:4545"
 
 networks:
   intelli-network:
-    # external: true
+    external: true
