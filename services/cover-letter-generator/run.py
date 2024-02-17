@@ -26,6 +26,7 @@ def listen_to_queue():
                                                                    port=int(rabbitmq_port),
                                                                    virtual_host='/',
                                                                    credentials=pika.PlainCredentials(rabbitmq_user, rabbitmq_pass)))
+
     channel = connection.channel()
 
     channel.queue_declare(queue=rabbitmq_queue, durable=True)
