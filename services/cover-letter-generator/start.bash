@@ -7,9 +7,9 @@ echo "Starting Cover Letter Generator App"
 gunicorn cover_letter_generator_app_wsgi:app \
 	-p ./pid \
 	-k eventlet \
-	-b 0.0.0.0:4545 \
+	-b 0.0.0.0:5000 \
 	--name=cover_letter_generator_app \
-	--workers 1 \
+	--workers 4 \
 	--log-level 0 \
 	--log-file logs/cover_letter_generator_app.log \
 	--error-logfile logs/cover_letter_generator_app.error.log \
