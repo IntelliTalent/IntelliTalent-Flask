@@ -5,7 +5,7 @@ services:
     container_name: cover-letter-generator
     build:
       context: .
-      dockerfile: .\dockerfile.dev
+      dockerfile: ./dockerfile.dev
       args:
         - APP=cover-letter-generator
     image: clg:latest
@@ -22,4 +22,4 @@ services:
 
 networks:
   intelli-network:
-    external: true
+    driver: bridge
