@@ -14,7 +14,7 @@ services:
     networks:
       - intelli-network
     volumes:
-      - ./shared/:/usr/src/app/shared/
+      - ./shared/:/usr/src/app/api/shared/
       - ./services/cover-letter-generator/:/usr/src/app/
     ports:
       - "3002:5000"
