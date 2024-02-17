@@ -6,6 +6,10 @@ RUN apk add --no-cache gcc musl-dev libffi-dev bash git
 
 COPY ./requirements.txt requirements.txt
 
+COPY ./prepareAndStartDev.bash /tmp/prepareAndStartDev.bash
+
+RUN chmod +x /tmp/prepareAndStartDev.bash
+
 RUN python -m venv venv
 
 RUN source venv/bin/activate
@@ -18,12 +22,14 @@ ARG APP
 
 COPY ./services/${APP}/ .
 
-RUN ls > waer.txt
-
 RUN chmod +x ./start.bash
 
 RUN chmod +x ./startDev.bash
 
 RUN chmod +x ./stop.bash
 
-CMD [ "python", "run.py"]
+RUN cp -r venv /tmp/venv
+
+RUN cp requirements.txt /tmp/requirements.txt
+
+CMD ["bash", "/tmp/prepareAndStartDev.bash"]

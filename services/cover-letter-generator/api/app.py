@@ -13,9 +13,9 @@ import os, pika, threading, json
 rabbitmq_user = os.getenv('RABBITMQ_USER')
 rabbitmq_pass = os.getenv('RABBITMQ_PASS')
 rabbitmq_host = os.getenv('RABBITMQ_HOST')
-rabbitmq_port = os.getenv('RABBITMQ_PORT')
+rabbitmq_port = os.getenv('RABBITMQ_PORT') 
 # for each service, the queue name should be unique
-rabbitmq_queue = os.getenv('')
+rabbitmq_queue = os.getenv('RABBITMQ_COVER_LETTER_QUEUE')
 
 def create_app():
     app = Flask(__name__)
@@ -56,7 +56,7 @@ def listen_to_queue():
         message = json.loads(body.decode())
  
         pattern = message.get("pattern")
-
+ 
         # Extract the command from the message
         command = pattern.get("cmd")
 
@@ -64,7 +64,7 @@ def listen_to_queue():
         response = handle_command(command)
 
         # Get the reply_to queue from message properties
-        reply_to = properties.reply_to
+        reply_to = properties.reply_to 
 
         ch.basic_publish(exchange='', routing_key=reply_to,
                 properties=pika.BasicProperties(correlation_id=properties.correlation_id),
@@ -74,8 +74,9 @@ def listen_to_queue():
     # Start consuming messages
     channel.basic_consume(queue=rabbitmq_queue, on_message_callback=callback, auto_ack=True)
 
-    print('Waiting for messages. To exit, press CTRL+C')
+    logger.debug('Waiting for messages. To exit, press CTRL+C')
     channel.start_consuming()
     
 def health_check():
+    logger.debug("Health check")
     return "Hello World From Cover Letter Service!"
