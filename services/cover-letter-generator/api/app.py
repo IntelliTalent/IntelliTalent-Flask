@@ -7,7 +7,8 @@ from .shared.rabbitmq import (
 )
 from instance import config
 from flask_sqlalchemy import SQLAlchemy
-import os, threading
+from pymongo import MongoClient
+import os, threading, redis
 
 def handle_command(command):
     if command == "healthCheck":
@@ -29,7 +30,28 @@ app = Flask(__name__)
 
 app.config.from_object(config)
 
+# connect to PostgreSQL database
 db = SQLAlchemy(app)
+
+# TODO: remove this
+# connect to MongoDB
+app.mongo = MongoClient(app.config['MONGODB_URI'])
+
+# TODO: remove this
+# connect to redis
+# initialize redis
+try:
+    pool = redis.ConnectionPool(
+        host=app.config.get("REDIS_HOST"),
+        port=app.config.get("REDIS_PORT"),
+        db=0,
+        socket_timeout=10,
+        retry_on_timeout=True,
+    )  # Password is optional, default is None if not set on config.
+    redis_client = redis.StrictRedis(connection_pool=pool)
+    app.redis_client = redis_client
+except Exception as e:
+    logger.exception(e)
 
 # Start listening to RabbitMQ in a separate thread
 rabbitmq_thread = threading.Thread(target=listen_to_queue, args=(rabbitmq_user, rabbitmq_pass, rabbitmq_host, rabbitmq_port, rabbitmq_queue, handle_command))
