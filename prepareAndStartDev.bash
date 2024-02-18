@@ -5,3 +5,5 @@ cp -r /tmp/venv /usr/src/app/venv
 cp /tmp/requirements.txt /usr/src/app/requirements.txt
 
 bash /usr/src/app/startDev.bash
+
+while true; do sleep 1; done
