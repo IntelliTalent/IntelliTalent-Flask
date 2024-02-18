@@ -9,6 +9,7 @@ from .helpers.helper import (
 from bson.json_util import dumps
 from bson.json_util import loads
 from .logger import logger
+import json
 
 def main():
     """
@@ -36,10 +37,17 @@ def main():
             dummy.append(doc)
             
         logger.debug("Dummy collection = %s", dummy)
+        app.redis_client.set("products", "dsfdsf")
+        products = app.redis_client.get("products")
+        
+        products = products.decode('utf-8')
+        
+        logger.debug("Products = %s", products)
         
         return {
             "profiles": profiles,
             "dummy": dummy,
+            "products": products
         }
     except Exception as e:
         return make_response_json({"message": str(e), "status": 500}, 500)

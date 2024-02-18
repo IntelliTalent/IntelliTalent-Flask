@@ -8,6 +8,7 @@ from .shared.rabbitmq import (
 from instance import config
 from flask_sqlalchemy import SQLAlchemy
 from pymongo import MongoClient
+from .logger import logger
 import os, threading, redis
 
 def handle_command(command):
@@ -40,15 +41,19 @@ app.mongo = MongoClient(app.config['MONGODB_URI'])
 # TODO: remove this
 # connect to redis
 # initialize redis
+logger.debug("Redis host: %s", os.getenv("REDIS_HOST"))
+logger.debug("Redis port: %s", os.getenv("REDIS_PORT"))
+logger.debug("Redis pass: %s", os.getenv("REDIS_PASSWORD"))
 try:
     pool = redis.ConnectionPool(
-        host=app.config.get("REDIS_HOST"),
-        port=app.config.get("REDIS_PORT"),
+        host=os.getenv("REDIS_HOST"),
+        port=os.getenv("REDIS_PORT"),
         db=0,
+        password=os.getenv("REDIS_PASSWORD"),
         socket_timeout=10,
         retry_on_timeout=True,
-    )  # Password is optional, default is None if not set on config.
-    redis_client = redis.StrictRedis(connection_pool=pool)
+    )
+    redis_client = redis.StrictRedis(connection_pool=pool, decode_responses=True)
     app.redis_client = redis_client
 except Exception as e:
     logger.exception(e)
