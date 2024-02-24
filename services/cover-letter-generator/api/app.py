@@ -1,19 +1,27 @@
 from flask import (
     Flask,
-    jsonify,
 )
 from .shared.rabbitmq import (
     listen_to_queue,
 )
 from instance import config
 from flask_sqlalchemy import SQLAlchemy
-from pymongo import MongoClient
 from .logger import logger
-import os, threading, redis
+"""from pymongo import MongoClient
+import redis"""
+import os, threading
 
 def handle_command(command):
+    """ TODO:
+        Define command/s to handle this functionalities:
+           - Given a profile ID, a company name (optional), and job title.
+           - Generate cover letter in 3 formats, Word (upload and put link in response), PDF (upload and put link in response), and Txt (put bare text in response).
+           - All the 3 formats must be in the same response.
+    """
+    
     if command == "healthCheck":
         return health_check()
+    
     else:
         return {"error": "Unknown command"}
     
@@ -63,12 +71,14 @@ rabbitmq_thread = threading.Thread(target=listen_to_queue, args=(rabbitmq_user, 
 rabbitmq_thread.daemon = True  # Stop the thread when the main thread exits
 rabbitmq_thread.start()
 
-from .index import (
+"""from .index import (
     main,
-)
+)"""
+
+# endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
 
 # doesn't do anything
-app.route("/", methods=["GET"])(main)
+#app.route("/", methods=["GET"])(main)
 
 # health check, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)

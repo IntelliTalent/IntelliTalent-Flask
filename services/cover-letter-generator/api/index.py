@@ -1,17 +1,14 @@
 from flask import request, jsonify, current_app as app
-from .profile.profile_service import (
+"""from .profile.profile_service import (
     create_profile,
     get_all_profiles
-)
+)"""
 from .helpers.helper import (
     make_response_json,
 )
-from bson.json_util import dumps
-from bson.json_util import loads
 from .logger import logger
-import json
 
-def main():
+'''def main():
     """
     main function
     """
@@ -50,7 +47,7 @@ def main():
             "products": products
         }
     except Exception as e:
-        return make_response_json({"message": str(e), "status": 500}, 500)
+        return make_response_json({"message": str(e), "status": 500}, 500)'''
     
 def health_check():
     logger.debug("Health check")
