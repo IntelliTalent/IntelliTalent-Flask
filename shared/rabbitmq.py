@@ -12,7 +12,7 @@ def listen_to_queue(rabbitmq_user, rabbitmq_pass, rabbitmq_host, rabbitmq_port, 
 
     def callback(ch, method, properties, body):
         # This function will be called when a message is received
-        # body variable contains RABBITMQ_COVER_LETTER_QUEUE message data
+        # body variable contains queue message data
 
         # Decode the message body
         message = json.loads(body.decode())

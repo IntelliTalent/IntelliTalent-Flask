@@ -6,9 +6,6 @@ from .logger import logger
 from pymongo import MongoClient
 import os, threading
 
-def health_check():
-    return "Hello World From Cover Letter Service!"
-
 app = Flask(__name__)
 
 app.config.from_object(config)
@@ -21,6 +18,9 @@ app.config.from_object(config)
 )"""
 
 # endpoints for testing
+from .index import (
+    health_check,
+)
 
 # health check endpoint
 app.route("/healthCheck", methods=["GET"])(health_check)
