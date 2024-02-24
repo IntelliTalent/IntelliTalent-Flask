@@ -34,14 +34,14 @@ app.config.from_object(config)
 # connect to PostgreSQL database
 db = SQLAlchemy(app)
 
-# TODO: remove this
+# (just for testing)
 # connect to MongoDB
-app.mongo = MongoClient(app.config['MONGODB_URI'])
+#app.mongo = MongoClient(app.config['MONGODB_URI'])
 
-# TODO: remove this
+# (just for testing)
 # connect to redis
 # initialize redis
-logger.debug("Redis host: %s", os.getenv("REDIS_HOST"))
+"""logger.debug("Redis host: %s", os.getenv("REDIS_HOST"))
 logger.debug("Redis port: %s", os.getenv("REDIS_PORT"))
 logger.debug("Redis pass: %s", os.getenv("REDIS_PASSWORD"))
 try:
@@ -56,7 +56,7 @@ try:
     redis_client = redis.StrictRedis(connection_pool=pool, decode_responses=True)
     app.redis_client = redis_client
 except Exception as e:
-    logger.exception(e)
+    logger.exception(e)"""
 
 # Start listening to RabbitMQ in a separate thread
 rabbitmq_thread = threading.Thread(target=listen_to_queue, args=(rabbitmq_user, rabbitmq_pass, rabbitmq_host, rabbitmq_port, rabbitmq_queue, handle_command))
