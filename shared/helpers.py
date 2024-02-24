@@ -1,4 +1,4 @@
-
+import simplejson
 
 def make_response_json(payload_obj, status_code=200, **kwargs):
     '''Return a JSON response by serializing `payload_obj`.
@@ -11,7 +11,6 @@ def make_response_json(payload_obj, status_code=200, **kwargs):
     Returns:
         tuple: Flask response consisting of JSON payload, status code, and content type header
     '''
-    import simplejson
     return (
         simplejson.dumps(payload_obj, **kwargs),
         status_code,

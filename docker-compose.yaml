@@ -1,5 +1,25 @@
 version: "3"
 services:
+
+  scrapper:
+    container_name: scrapper
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=scrapper
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/scrapper/:/usr/src/app/
+    ports:
+      - "3001:5000"
+
   cover-letter:
     container_name: cover-letter-generator
     build:

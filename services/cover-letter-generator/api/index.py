@@ -3,7 +3,7 @@ from flask import request, jsonify, current_app as app
     create_profile,
     get_all_profiles
 )"""
-from .helpers.helper import (
+from .shared.helpers import (
     make_response_json,
 )
 from .logger import logger
