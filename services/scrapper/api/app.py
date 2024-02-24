@@ -11,11 +11,16 @@ app = Flask(__name__)
 app.config.from_object(config)
 
 # connect to MongoDB
-#app.mongo = MongoClient(app.config['MONGODB_URI'])
+# to use this db, use app.mongo[db]
+db_name = os.getenv('ScrappedJobsDB')
 
-"""from .index import (
-    main,
-)"""
+app.mongo = MongoClient(app.config['MONGODB_URI'])
+
+""" TODO:
+    Define cronjob/s starting every X hours to handle this functionalities:
+        - Scrape new jobs from jobs websites (initially LinkedIn).
+        - Insert only new jobs into unstructured jobs DB.
+"""
 
 # endpoints for testing
 from .index import (

@@ -24,9 +24,6 @@ def handle_command(command):
     
     else:
         return {"error": "Unknown command"}
-    
-def health_check():
-    return "Hello World From Cover Letter Service!"
 
 rabbitmq_user = os.getenv('RABBITMQ_USER')
 rabbitmq_pass = os.getenv('RABBITMQ_PASS')
@@ -71,14 +68,11 @@ rabbitmq_thread = threading.Thread(target=listen_to_queue, args=(rabbitmq_user, 
 rabbitmq_thread.daemon = True  # Stop the thread when the main thread exits
 rabbitmq_thread.start()
 
-"""from .index import (
-    main,
-)"""
+from .index import (
+    health_check,
+)
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
-
-# doesn't do anything
-#app.route("/", methods=["GET"])(main)
 
 # health check, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
