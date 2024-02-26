@@ -39,6 +39,25 @@ services:
     ports:
       - "3002:5000"
 
+  job-extractor:
+    container_name: job-extractor
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=job-extractor
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/job-extractor/:/usr/src/app/
+    ports:
+      - "3003:5000"
+
 networks:
   intelli-network:
     driver: bridge

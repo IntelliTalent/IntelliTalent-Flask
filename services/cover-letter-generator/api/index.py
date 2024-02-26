@@ -51,4 +51,4 @@ from .logger import logger
     
 def health_check():
     logger.debug("Health check")
-    return "Hello World From Cover Letter Service!"
+    return "Hello World From Cover Letter Generator Service!"
