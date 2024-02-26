@@ -1,4 +1,3 @@
-from flask import current_app as app
 from sqlalchemy import Column, String, Integer, Text, Boolean, Date, JSON
 from sqlalchemy.orm import relationship
 from ..app import db
