@@ -58,6 +58,25 @@ services:
     ports:
       - "3003:5000"
 
+  cv-extractor:
+    container_name: cv-extractor
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=cv-extractor
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/cv-extractor/:/usr/src/app/
+    ports:
+      - "3004:5000"
+
 networks:
   intelli-network:
     driver: bridge
