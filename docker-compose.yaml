@@ -77,6 +77,25 @@ services:
     ports:
       - "3004:5000"
 
+  custom-job:
+    container_name: custom-job
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=custom-job
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/custom-job/:/usr/src/app/
+    ports:
+      - "3005:5000"
+
 networks:
   intelli-network:
     driver: bridge
