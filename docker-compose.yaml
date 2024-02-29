@@ -96,6 +96,25 @@ services:
     ports:
       - "3005:5000"
 
+  quiz:
+    container_name: quiz
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=quiz
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/quiz/:/usr/src/app/
+    ports:
+      - "3006:5000"
+
 networks:
   intelli-network:
     driver: bridge

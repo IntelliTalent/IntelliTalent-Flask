@@ -24,4 +24,4 @@ unstructured_jobs_schema = {
 }
 
 # Create the 'unstructured_jobs' collection and add validation rules
-database.create_collection('unstructured_jobs', validator=unstructured_jobs_schema)
+database.create_collection('unstructuredjobs', validator=unstructured_jobs_schema)
