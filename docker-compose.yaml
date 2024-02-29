@@ -115,6 +115,25 @@ services:
     ports:
       - "3006:5000"
 
+  interview:
+    container_name: interview
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=interview
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/interview/:/usr/src/app/
+    ports:
+      - "3007:5000"
+
 networks:
   intelli-network:
     driver: bridge

@@ -1,7 +1,5 @@
 from flask import current_app as app
 from ..app import db_name
-from pymongo import MongoClient
-from datetime import datetime
 
 # Connect to MongoDB
 database = app.mongo[db_name]
