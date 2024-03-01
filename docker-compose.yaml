@@ -134,6 +134,25 @@ services:
     ports:
       - "3007:5000"
 
+  cv-generator:
+    container_name: cv-generator
+    build:
+      context: .
+      dockerfile: ./dockerfile.dev
+      args:
+        - APP=cv-generator
+    image: clg:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    networks:
+      - intelli-network
+    volumes:
+      - ./shared/:/usr/src/app/api/shared/
+      - ./services/cv-generator/:/usr/src/app/
+    ports:
+      - "3008:5000"
+
 networks:
   intelli-network:
     driver: bridge
