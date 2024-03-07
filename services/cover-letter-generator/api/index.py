@@ -1,4 +1,5 @@
 from flask import request, jsonify, current_app as app
+import simplejson as json
 """from .profile.profile_service import (
     create_profile,
     get_all_profiles
@@ -52,3 +53,12 @@ from .logger import logger
 def health_check():
     logger.debug("Health check")
     return "Hello World From Cover Letter Generator Service!"
+
+def generate_cover_letter():
+    response = {
+        "pdf": "https://www.google.com",
+        "word": "https://www.google.com",
+        "text": """This is a simple cover letter!
+Line 2!"""
+    }
+    return json.dumps(response)

@@ -4,9 +4,13 @@ from flask import (
 from .shared.rabbitmq import (
     listen_to_queue,
 )
+from .shared.helpers import (
+    make_response_json
+)
 from instance import config
 from flask_sqlalchemy import SQLAlchemy
 from .logger import logger
+import json
 """from pymongo import MongoClient
 import redis"""
 import os, threading
@@ -21,6 +25,9 @@ def handle_command(command):
     
     if command == "healthCheck":
         return health_check()
+    
+    if command == "generateCoverLetter":
+        return generate_cover_letter()
     
     else:
         return {"error": "Unknown command"}
@@ -70,6 +77,7 @@ rabbitmq_thread.start()
 
 from .index import (
     health_check,
+    generate_cover_letter,
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
@@ -77,3 +85,8 @@ from .index import (
 # health check, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
 
+def generate_cover_letter_endpoint():
+    return make_response_json(json.loads(generate_cover_letter()))
+
+# health check, replica of generateCoverLetter pattern
+app.route("/generateCoverLetter", methods=["POST"])(generate_cover_letter_endpoint)
