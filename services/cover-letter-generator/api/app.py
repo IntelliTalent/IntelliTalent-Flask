@@ -1,5 +1,6 @@
 from flask import (
     Flask,
+    request
 )
 from .shared.rabbitmq import (
     listen_to_queue,
@@ -10,12 +11,11 @@ from .shared.helpers import (
 from instance import config
 from flask_sqlalchemy import SQLAlchemy
 from .logger import logger
-import json
 """from pymongo import MongoClient
 import redis"""
-import os, threading
+import os, threading, json
 
-def handle_command(command):
+def handle_command(command, data):
     """ TODO:
         Define command/s to handle this functionalities:
            - Given a profile ID, a company name (optional), and job title.
@@ -27,7 +27,7 @@ def handle_command(command):
         return health_check()
     
     if command == "generateCoverLetter":
-        return generate_cover_letter()
+        return generate_cover_letter(data)
     
     else:
         return {"error": "Unknown command"}
@@ -82,11 +82,16 @@ from .index import (
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
 
-# health check, replica of healthCheck pattern
+# for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
 
-def generate_cover_letter_endpoint():
-    return make_response_json(json.loads(generate_cover_letter()))
+def generate_cover_letter_endpoint(profile_id):
+    body = request.get_json()
+    data = {
+        **body,
+        "profile_id": profile_id,
+    }
+    return make_response_json(json.loads(generate_cover_letter(body)))
 
-# health check, replica of generateCoverLetter pattern
-app.route("/generateCoverLetter", methods=["POST"])(generate_cover_letter_endpoint)
+# for testing, replica of generateCoverLetter pattern
+app.route("/generateCoverLetter/<profile_id>", methods=["POST"])(generate_cover_letter_endpoint)

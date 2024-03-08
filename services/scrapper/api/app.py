@@ -32,6 +32,6 @@ from .index import (
     health_check,
 )
 
-# health check endpoint
+# for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
 

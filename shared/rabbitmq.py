@@ -26,7 +26,7 @@ def listen_to_queue(rabbitmq_user, rabbitmq_pass, rabbitmq_host, rabbitmq_port, 
             command = pattern.get("cmd")
 
             # Handle the command and get the response
-            response = handle_command(command)
+            response = handle_command(command, message.get("data"))
 
             # Get the reply_to queue from message properties
             reply_to = properties.reply_to 

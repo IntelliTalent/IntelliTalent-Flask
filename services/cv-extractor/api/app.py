@@ -46,6 +46,5 @@ from .index import (
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
 
-# health check, replica of healthCheck pattern
+# for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
-

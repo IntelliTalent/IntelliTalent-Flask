@@ -54,7 +54,8 @@ def health_check():
     logger.debug("Health check")
     return "Hello World From Cover Letter Generator Service!"
 
-def generate_cover_letter():
+def generate_cover_letter(data):
+    logger.debug("Generating Cover Letter for data: %s", data)
     response = {
         "pdf": "https://www.google.com",
         "word": "https://www.google.com",
