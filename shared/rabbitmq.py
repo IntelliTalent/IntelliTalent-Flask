@@ -31,8 +31,6 @@ def listen_to_queue(rabbitmq_user, rabbitmq_pass, rabbitmq_host, rabbitmq_port, 
             # Get the reply_to queue from message properties
             reply_to = properties.reply_to 
             
-            logger.debug("properties = %s", properties)
-
             ch.basic_publish(exchange='', routing_key=reply_to,
                     properties=pika.BasicProperties(correlation_id=properties.correlation_id),
                     body=json.dumps(response))
