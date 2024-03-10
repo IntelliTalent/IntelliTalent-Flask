@@ -17,6 +17,8 @@ def handle_command(command):
     
     if command == "healthCheck":
         return health_check()
+    elif command == "createCustomJob":
+        return create_custom_job()
     
     else:
         return {"error": "Unknown command"}
