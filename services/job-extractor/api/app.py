@@ -8,7 +8,7 @@ from instance import config
 from .logger import logger
 import os, threading
 
-def handle_command(command):
+def handle_command(command, data):
     """ TODO:
         Define command/s to handle this functionalities:
            - Receive an unstructured job from Jobs service, extract structured job from it, and return it back.
@@ -16,6 +16,9 @@ def handle_command(command):
     
     if command == "healthCheck":
         return health_check()
+    
+    if command == "extractInfo":
+        return get_job_info(data)
     
     else:
         return {"error": "Unknown command"}
@@ -38,6 +41,7 @@ rabbitmq_thread.start()
 
 from .index import (
     health_check,
+    get_job_info
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns

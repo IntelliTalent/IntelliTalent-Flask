@@ -19,6 +19,10 @@ def handle_command(command):
     
     if command == "healthCheck":
         return health_check()
+    elif command == "submitInterview":
+        return submit_interview()
+    elif command == "getUserAnswers":
+        return get_user_answers()
     
     else:
         return {"error": "Unknown command"}
@@ -48,6 +52,8 @@ app.mongo = MongoClient(app.config['MONGODB_URI'])
 # endpoints for testing
 from .index import (
     health_check,
+    submit_interview,
+    get_user_answers
 )
 
 # for testing, replica of healthCheck pattern

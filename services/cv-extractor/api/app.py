@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from .logger import logger
 import os, threading
 
-def handle_command(command):
+def handle_command(command, data):
     """ TODO:
         Define command/s to handle this functionalities:
             - Should handle event of uploaded CV with user id, extract useful data and save it to Profile DB with user id (edit his record).
@@ -17,6 +17,9 @@ def handle_command(command):
     
     if command == "healthCheck":
         return health_check()
+    
+    if command == "extractInfo":
+        return get_cv_info(data)
     
     else:
         return {"error": "Unknown command"}
@@ -42,6 +45,7 @@ rabbitmq_thread.start()
 
 from .index import (
     health_check,
+    get_cv_info
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
