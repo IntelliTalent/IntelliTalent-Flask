@@ -91,7 +91,7 @@ def generate_cover_letter_endpoint(profile_id):
         **body,
         "profile_id": profile_id,
     }
-    return make_response_json(json.loads(generate_cover_letter(body)))
+    return make_response_json(json.loads(generate_cover_letter(data)))
 
 # for testing, replica of generateCoverLetter pattern
 app.route("/generateCoverLetter/<profile_id>", methods=["POST"])(generate_cover_letter_endpoint)
