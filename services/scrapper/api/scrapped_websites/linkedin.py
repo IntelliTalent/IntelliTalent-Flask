@@ -6,24 +6,38 @@ from itertools import groupby
 from langdetect import detect
 from langdetect.lang_detect_exception import LangDetectException
 from datetime import datetime, timedelta, time
-import pandas as pd
-
 from ..logger import logger
 from instance import config
+import urllib.request
 
 def get_with_retry(url, retries=config.RETRIES, delay=config.DELAY):
-	# Get the URL with retries and delay
-	for _ in range(retries):
-		try:
-			r = requests.get(url, timeout=5)
-			return BeautifulSoup(r.content, "html.parser")
-		except requests.exceptions.Timeout:
-			logger.debug(f"Timeout occurred for URL: {url}, retrying in {delay}s...")
-			tm.sleep(delay)
-		except Exception as e:
-			logger.error(f"An error occurred while retrieving the URL: {url}")
-			logger.exception(e)
-	return None
+    # Get the URL with retries and delay
+    for _ in range(retries):
+        try:
+            import http.client
+
+            conn = http.client.HTTPSConnection("www.linkedin.com")
+            payload = ''
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Cookie': 'bcookie="v=2&64c3c2a9-eddf-457e-809b-ce976289dec5"; lang=v=2&lang=en-us; lidc="b=OGST06:s=O:r=O:a=O:p=O:g=2898:u=1:x=1:i=1710364065:t=1710450465:v=2:sig=AQFFvO_gfmCIPUDTnsbszaU3ivfMcBxC"; JSESSIONID=ajax:9193762190186514847; bscookie="v=1&2024031316420446817da7-1c28-418d-800e-504e4e5e997cAQE8Ckii3bKdukpnl371xL3uOQL_szrH"'
+            }
+            conn.request("GET", "/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=Python%2520developer&location=Los%2520Angeles&f_TPR=&f_WT=&geoId=&f_TPR=r84600&start=0", payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            print(data.decode("utf-8"))
+            
+            return BeautifulSoup(data.decode("utf-8"), "html.parser")
+        except requests.exceptions.Timeout:
+            logger.debug(f"Timeout occurred for URL: {url}, retrying in {delay}s...")
+            tm.sleep(delay)
+        except Exception as e:
+            logger.error(f"An error occurred while retrieving the URL: {url}")
+            logger.exception(e)
+    return None
 
 def get_job_cards_main_info(soup):
 	# Parsing the job card info (title, company, location, date, job_url) from the beautiful soup object
@@ -48,7 +62,7 @@ def get_job_cards_main_info(soup):
 		job_posting_id = entity_urn.split(":")[-1]
 		
 		# Construct job url
-		job_url = f"https://www.linkedin.com/jobs/view/{job_posting_id}/"
+		job_url = f"http://www.linkedin.com/jobs/view/{job_posting_id}/"
 
 		# TODO: Add date
 		date_tag_new = item.find("time", class_ = "job-search-card__listdate--new")
@@ -74,55 +88,61 @@ def get_job_cards_main_info(soup):
 
 def get_job_info(soup):
     # TODO: check what else can we get from the page
-    div = soup.find('div', class_='description__text description__text--rich')
+    div = soup.find("div", class_="description__text description__text--rich")
     if div:
         # Remove unwanted elements
-        for element in div.find_all(['span', 'a']):
+        for element in div.find_all(["span", "a"]):
             element.decompose()
 
         # Replace bullet points
-        for ul in div.find_all('ul'):
-            for li in ul.find_all('li'):
-                li.insert(0, '-')
+        for ul in div.find_all("ul"):
+            for li in ul.find_all("li"):
+                li.insert(0, "-")
 
-        text = div.get_text(separator='\n').strip()
-        text = text.replace('\n\n', '')
-        text = text.replace('::marker', '-')
-        text = text.replace('-\n', '- ')
-        text = text.replace('Show less', '').replace('Show more', '')
+        text = div.get_text(separator="\n").strip()
+        text = text.replace("\n\n", "")
+        text = text.replace("::marker", "-")
+        text = text.replace("-\n", "- ")
+        text = text.replace("Show less", "").replace("Show more", "")
         return text
     else:
         return "Could not find Job Description"
 
 def get_search_queries():
-	titles = config.JOB_TITLES
-	locations = config.JOB_LOCATION
-	types = config.JOB_TYPE
+    titles = config.JOB_TITLES
+    locations = config.JOB_LOCATIONS
+    types = config.JOB_TYPES
 
-	search_queries = []
+    search_queries = []
 
-	for title in titles:
-		for location in locations:
-			for type in types:
-				search_queries.append({
-					'keywords': title,
-					'location': location,
-					'f_WT': type
-				})
-	return search_queries
+    for title in titles:
+        for location in locations:
+            search_queries.append({
+                "keywords": title,
+                "location": location,
+            })
+    """for title in titles:
+        for location in locations:
+            # for type in types
+                search_queries.append({
+                    "keywords": title,
+                    "location": location,
+                    #"f_WT": type
+                })"""
+    return search_queries
 
 def remove_duplicates(joblist):
     # Remove duplicate jobs in the joblist.
     # Duplicate is defined as having the same title and company.
-    joblist.sort(key=lambda x: (x['title'], x['company']))
-    joblist = [next(g) for k, g in groupby(joblist, key=lambda x: (x['title'], x['company']))]
+    joblist.sort(key=lambda x: (x["title"], x["company"]))
+    joblist = [next(g) for k, g in groupby(joblist, key=lambda x: (x["title"], x["company"]))]
     return joblist
 
 def safe_detect(text):
     try:
         return detect(text)
     except LangDetectException:
-        return 'en'
+        return "en"
 
 def get_job_cards(search_queries, rounds = config.ROUNDS, pages_to_scrape = config.PAGES_TO_SCRAPE):
     # Function to get the job cards from the search results page
@@ -130,14 +150,15 @@ def get_job_cards(search_queries, rounds = config.ROUNDS, pages_to_scrape = conf
     
     for _ in range(0, rounds):
         for query in search_queries:
-            keywords = quote(query['keywords']) # URL encode the keywords
-            location = quote(query['location']) # URL encode the location
-            type = query['f_WT']
-            timespan = 'r84600' # 60 * 60 * 24 = 24 hours
+            keywords = quote(query["keywords"]) # URL encode the keywords
+            location = quote(query["location"]) # URL encode the location
+            #type = query["f_WT"]
+            timespan = "r84600" # 60 * 60 * 24 = 24 hours
             
             for i in range (0, pages_to_scrape):
 				# Construct the URL
-                url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=&f_WT={type}&geoId=&f_TPR={timespan}&start={25*i}"
+                #url = f"http://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=&f_WT={type}&geoId=&f_TPR={timespan}&start={25*i}"
+                url = f"http://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&geoId=&f_TPR={timespan}&start={25*i}"
 
                 soup = get_with_retry(url)
                 jobs = get_job_cards_main_info(soup)
@@ -170,7 +191,7 @@ def convert_date_format(date_string):
         logger.error(f"Error: The date for job {date_string} - is not in the correct format.")
         return None
 
-def main():
+def linkedin_scrape():
     start_time = tm.perf_counter()
     job_list = []
 
@@ -184,30 +205,38 @@ def main():
     if len(all_jobs) > 0:
         for job in all_jobs:
             # Get the date in the correct format
-            job_date = convert_date_format(job['date'])
+            job_date = convert_date_format(job["date"])
             job_date = datetime.combine(job_date, time())
             
             # If job is older than a DAYS_TO_SCRAPE, skip it
             if job_date < datetime.now() - timedelta(days=config.DAYS_TO_SCRAPE):
                 continue
             
-            logger.debug(f'Found new job: {job['title']}, at {job['company']}, url: {job['job_url']}')
+            logger.debug(f"Found new job: {job['title']}, at {job['company']}, url: {job['job_url']}")
             
             # Get the job description
-            desc_soup = get_with_retry(job['job_url'])
-            job['job_description'] = get_job_info(desc_soup)
+            desc_soup = get_with_retry(job["job_url"])
+            job["job_description"] = get_job_info(desc_soup)
             
             job_list.append(job)
 		
 
-		# TODO: Remove this
-        df = pd.DataFrame(job_list)
-        df['date_loaded'] = datetime.now()
-        df['date_loaded'] = df['date_loaded'].astype(str)
+		# TODO: Remove this 
+        """df = pd.DataFrame(job_list)
+        df["date_loaded"] = datetime.now()
+        df["date_loaded"] = df["date_loaded"].astype(str)
         
-        df.to_csv('linkedin_jobs.csv', index=False, encoding='utf-8')
+        df.to_csv("linkedin_jobs.csv", index=False, encoding="utf-8")"""
     else:
         logger.debug("No jobs found")
     
     end_time = tm.perf_counter()
     logger.info(f"Scraping finished in {end_time - start_time:.2f} seconds")
+    
+    return {
+        "status": "success",
+        "jobs": job_list       
+    }
+    
+if __name__ == "__main__":
+    print(linkedin_scrape())
