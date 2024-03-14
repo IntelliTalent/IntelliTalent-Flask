@@ -39,5 +39,9 @@ app.route("/healthCheck", methods=["GET"])(health_check)
 from .scrapped_websites.linkedin import (
     linkedin_scrape,
 )
+from .scrapped_websites.wuzzuf import (
+    wuzzuf_scrape,
+)
 
 app.route("/linkedinScrape", methods=["GET"])(linkedin_scrape)
+app.route("/wuzzufScrape", methods=["GET"])(wuzzuf_scrape)
