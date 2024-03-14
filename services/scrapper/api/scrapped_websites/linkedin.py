@@ -1,5 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
 import time as tm
 from urllib.parse import quote
 from itertools import groupby
@@ -8,29 +6,15 @@ from langdetect.lang_detect_exception import LangDetectException
 from datetime import datetime, timedelta, time
 from ..logger import logger
 from instance import config
-import urllib.request
+from bs4 import BeautifulSoup
+import _thread, requests, json
 
 def get_with_retry(url, retries=config.RETRIES, delay=config.DELAY):
     # Get the URL with retries and delay
     for _ in range(retries):
         try:
-            import http.client
-
-            conn = http.client.HTTPSConnection("www.linkedin.com")
-            payload = ''
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Cookie': 'bcookie="v=2&64c3c2a9-eddf-457e-809b-ce976289dec5"; lang=v=2&lang=en-us; lidc="b=OGST06:s=O:r=O:a=O:p=O:g=2898:u=1:x=1:i=1710364065:t=1710450465:v=2:sig=AQFFvO_gfmCIPUDTnsbszaU3ivfMcBxC"; JSESSIONID=ajax:9193762190186514847; bscookie="v=1&2024031316420446817da7-1c28-418d-800e-504e4e5e997cAQE8Ckii3bKdukpnl371xL3uOQL_szrH"'
-            }
-            conn.request("GET", "/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=Python%2520developer&location=Los%2520Angeles&f_TPR=&f_WT=&geoId=&f_TPR=r84600&start=0", payload, headers)
-            res = conn.getresponse()
-            data = res.read()
-            print(data.decode("utf-8"))
-            
-            return BeautifulSoup(data.decode("utf-8"), "html.parser")
+            r = requests.get(url)
+            return BeautifulSoup(r.content, "html.parser")
         except requests.exceptions.Timeout:
             logger.debug(f"Timeout occurred for URL: {url}, retrying in {delay}s...")
             tm.sleep(delay)
@@ -64,24 +48,16 @@ def get_job_cards_main_info(soup):
 		# Construct job url
 		job_url = f"http://www.linkedin.com/jobs/view/{job_posting_id}/"
 
-		# TODO: Add date
 		date_tag_new = item.find("time", class_ = "job-search-card__listdate--new")
 		date_tag = item.find("time", class_="job-search-card__listdate")
 		date = date_tag["datetime"] if date_tag else date_tag_new["datetime"] if date_tag_new else ""
-		logger.debug(date)
 		
-		# job_description = ""
 		job = {
 			"title": title,
 			"company": company.text.strip().replace("\n", " ") if company else "",
 			"location": location.text.strip() if location else "",
 			"date": date,
-			"job_url": job_url,
-			# "job_description": job_description,
-			# "applied": 0,
-			# "hidden": 0,
-			# "interview": 0,
-			# "rejected": 0
+			"job_url": job_url
 		}
 		joblist.append(job)
 	return joblist
@@ -153,7 +129,7 @@ def get_job_cards(search_queries, rounds = config.ROUNDS, pages_to_scrape = conf
             keywords = quote(query["keywords"]) # URL encode the keywords
             location = quote(query["location"]) # URL encode the location
             #type = query["f_WT"]
-            timespan = "r84600" # 60 * 60 * 24 = 24 hours
+            timespan = "r" + str(config.DAYS_TO_SCRAPE * 24 * 60 * 60)
             
             for i in range (0, pages_to_scrape):
 				# Construct the URL
@@ -162,14 +138,19 @@ def get_job_cards(search_queries, rounds = config.ROUNDS, pages_to_scrape = conf
 
                 soup = get_with_retry(url)
                 jobs = get_job_cards_main_info(soup)
+                
+                if len(jobs) == 0:
+                    logger.debug("No jobs found on page: %s", url)
+                    break
+                
                 all_jobs = all_jobs + jobs
                 
-                logger.debug("Finished scraping page: ", url)
+                logger.debug("Finished scraping page: %s", url)
 	
-    logger.debug("Total job cards scraped: ", len(all_jobs))
+    logger.debug("Total job cards scraped: %s", len(all_jobs))
 
     all_jobs = remove_duplicates(all_jobs)
-    logger.debug("Total job cards after removing duplicates: ", len(all_jobs))
+    logger.debug("Total job cards after removing duplicates: %s", len(all_jobs))
     
     return all_jobs
 
@@ -191,7 +172,7 @@ def convert_date_format(date_string):
         logger.error(f"Error: The date for job {date_string} - is not in the correct format.")
         return None
 
-def linkedin_scrape():
+def linkedin_scrape_thread():
     start_time = tm.perf_counter()
     job_list = []
 
@@ -200,17 +181,13 @@ def linkedin_scrape():
 
     # Filtering out jobs that are already in the database
     # TODO: Check the the jobs was not scraped before
-    logger.info("Total new jobs found after comparing to the database: ", len(all_jobs))
+    logger.info("Total new jobs found after comparing to the database: %s", len(all_jobs))
 
     if len(all_jobs) > 0:
         for job in all_jobs:
             # Get the date in the correct format
             job_date = convert_date_format(job["date"])
             job_date = datetime.combine(job_date, time())
-            
-            # If job is older than a DAYS_TO_SCRAPE, skip it
-            if job_date < datetime.now() - timedelta(days=config.DAYS_TO_SCRAPE):
-                continue
             
             logger.debug(f"Found new job: {job['title']}, at {job['company']}, url: {job['job_url']}")
             
@@ -219,24 +196,26 @@ def linkedin_scrape():
             job["job_description"] = get_job_info(desc_soup)
             
             job_list.append(job)
-		
-
-		# TODO: Remove this 
-        """df = pd.DataFrame(job_list)
-        df["date_loaded"] = datetime.now()
-        df["date_loaded"] = df["date_loaded"].astype(str)
-        
-        df.to_csv("linkedin_jobs.csv", index=False, encoding="utf-8")"""
     else:
         logger.debug("No jobs found")
     
     end_time = tm.perf_counter()
     logger.info(f"Scraping finished in {end_time - start_time:.2f} seconds")
     
+    # TODO: save to DB
+    with open("api/scrapped_websites/jobs.json", "w") as f:
+        content = {
+            "length": len(job_list),
+            "jobs": job_list
+        }
+        json.dump(content, f, indent=4)
+        
+def linkedin_scrape():
+    _thread.start_new_thread(
+            linkedin_scrape_thread, ()
+        )
+    
     return {
         "status": "success",
-        "jobs": job_list       
+        "message": "scrapping started"
     }
-    
-if __name__ == "__main__":
-    print(linkedin_scrape())

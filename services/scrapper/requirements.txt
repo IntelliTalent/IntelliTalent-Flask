@@ -6,7 +6,7 @@ bs4==0.0.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
-dnspython==2.6.1
+dnspython==1.16.0
 eventlet==0.33.3
 Flask==2.3.2
 Flask-Migrate==4.0.5
@@ -32,6 +32,6 @@ six==1.16.0
 soupsieve==2.5
 SQLAlchemy==2.0.27
 typing_extensions==4.9.0
-urllib3==1.26.18
+urllib3==2.2.1
 Werkzeug==2.3.6
 zipp==3.17.0
