@@ -33,7 +33,7 @@ JOB_TITLES = ['ai engineer', 'backend engineer', 'cloud engineer', 'cyber securi
 JOB_LOCATIONS = ['Egypt', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Kuwait', 'Bahrain', 'Oman', 'Jordan', 'Lebanon', 'Iraq', 'Syria', 'Yemen', 'Libya', 'Tunisia', 'Algeria', 'Morocco', 'Sudan', 'Palestine', 'Comoros', 'Djibouti', 'Mauritania', 'Somalia']
 
 # 0: onsite - 1:hybrid - 2:remote - empty:no value
-JOB_TYPES = [0, 1, 2, '']
+JOB_TYPES = [1, 2, 3, '']
 
 # Max number of days to scrape (take only the last DAYS_TO_SCRAPE days) 
 DAYS_TO_SCRAPE = 1
