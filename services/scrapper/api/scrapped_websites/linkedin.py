@@ -18,7 +18,7 @@ ROUNDS = 1
 PAGES_TO_SCRAPE = 10
 
 # Number of times to retry to connect to the same url
-RETRIES = 3
+RETRIES = 4
 DELAY = 1
 
 # 1: onsite - 2: remote - 3: hybrid
@@ -245,10 +245,14 @@ def linkedin_scrape_thread(unstructured_jobs_db):
         for job in all_jobs:
             logger.debug(f"(LinkedIn) Found new job: {job['title']}, at {job['company']}, url: {job['url']}")
             
-            # Get the job description
-            desc_soup = get_with_retry(job["url"])
-            
-            job["description"] = get_job_description(desc_soup)
+            for _ in range(RETRIES):
+                # Get the job description
+                desc_soup = get_with_retry(job["url"])
+                
+                job["description"] = get_job_description(desc_soup)
+                
+                if job["description"] != "Could not find Job Description":
+                    break
             
             job_list.append(job)
             
