@@ -6,7 +6,6 @@ import time as tm
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-
 JOB_QUERY = {
     "startIndex": 0,
     "pageSize": 25,
@@ -32,7 +31,19 @@ JOB_TYPE = [
     "Volunteer"
 ]
 
+# The number of pages to scrape for each search query
+PAGES_TO_SCRAPE = 10
+
 def get_search_queries():
+    """
+    Get the search queries (enumerate the job titles and locations) from the config file
+
+    Args:
+        None
+
+    Returns:
+        list: The list of search queries
+    """
     titles = config.JOB_TITLES
     locations = config.JOB_LOCATIONS
 
@@ -48,6 +59,15 @@ def get_search_queries():
     return search_queries
 
 def get_jobs_details(jobs):
+    """
+    Get the details of the jobs from the jobs array
+
+    Args:
+        jobs (list): The list of jobs returned from the WUZZUF API
+
+    Returns:
+        list: The list of jobs with details ready to be inserted into the database
+    """
     job_ids, job_companies = [], []
     for job in jobs:
         job_ids.append(job['id'])
@@ -64,18 +84,13 @@ def get_jobs_details(jobs):
     for company, job in zip(job_companies, job_details_json['data']):
         job_data = job['attributes']
 
-        published_at = job_data['postedAt']
-  
-        # Parse input string into a datetime object
-        published_at_datetime = datetime.strptime(published_at, "%m/%d/%Y %H:%M:%S")
-
         # Format datetime object into desired output format
+        published_at_datetime = datetime.strptime(job_data['postedAt'], "%m/%d/%Y %H:%M:%S")
         published_at = published_at_datetime.strftime("%Y-%m-%d")
-  
+        
+        # Format the description to remove HTML tags
         description_html = job_data['description'] + "\n" + job_data['requirements'] if job_data['requirements'] else job_data['description']
-  
         description_soap = BeautifulSoup(description_html, 'html.parser')
-  
         description = description_soap.get_text(separator="\n").strip()
         description = description.replace("\n\n", "")
         description = description.replace("::marker", "-")
@@ -90,7 +105,7 @@ def get_jobs_details(jobs):
             "url": f"https://wuzzuf.net/{job_data['uri']}",
             "type": next((job_type for job_type in JOB_TYPE if any(job['displayedName'] == job_type for job in job_data['workTypes'])), "Other"),
             "skills": [skill['name'] for skill in job_data['keywords']],
-            "jobPlace": job_data['workplaceArrangement']['displayedName'] if job_data['workplaceArrangement'] else None,
+            "jobPlace": job_data['workplaceArrangement']['displayedName'] if job_data['workplaceArrangement'] else "On Site",
             "neededExperience": job_data['workExperienceYears']['min'],
             "education": job_data['candidatePreferences']['educationLevel']['name'],
         }
@@ -100,24 +115,44 @@ def get_jobs_details(jobs):
     
     return jobs
 
-def get_jobs(search_queries):
+def get_jobs(search_queries, pages_to_scrape=PAGES_TO_SCRAPE):
+    """
+    Get the jobs from the WUZZUF API
+
+    Args:
+        search_queries (list): The list of search queries
+        pages_to_scrape (int, optional): The number of pages to scrape. Defaults to PAGES_TO_SCRAPE.
+
+    Returns:
+        list: The list of jobs
+    """
     all_jobs = []
 
     for query in search_queries:
         title = query["title"]
         location = query["location"]
         
-        JOB_QUERY["query"] = title
-        JOB_QUERY["searchFilters"]["country"] = [location]
-        data = json.dumps(JOB_QUERY)
-        job_search_json = requests.post(WUZZUF_SEARCH_API , headers=HEADERS , data=data).json()
+        for i in range (0, pages_to_scrape):
+            JOB_QUERY["startIndex"] = i
+            JOB_QUERY["query"] = title
+            JOB_QUERY["searchFilters"]["country"] = [location]
+            data = json.dumps(JOB_QUERY)
+            job_search_json = requests.post(WUZZUF_SEARCH_API , headers=HEADERS , data=data).json()
 
-        jobs = get_jobs_details(job_search_json['data'])
-        all_jobs += jobs
+            jobs = get_jobs_details(job_search_json['data'])
+            all_jobs += jobs
 
     return all_jobs
 
 def wuzzuf_scrape_thread(unstructured_jobs_db):
+    """
+    Scrape jobs from WUZZUF
+
+    Args:
+        unstructured_jobs_db (MongoClient): The unstructured jobs database
+    Returns:
+        None
+    """
     start_time = tm.perf_counter()
 
     search_queries = get_search_queries()
@@ -132,7 +167,6 @@ def wuzzuf_scrape_thread(unstructured_jobs_db):
         logger.debug(f"(Wuzzuf) Total job cards scraped: {jobs_length}")
     else:
         logger.debug("(Wuzzuf) No jobs found")
-  
+    
     end_time = tm.perf_counter()
     logger.info(f"Scraping Wuzzuf finished in {end_time - start_time:.2f} seconds")
-        
