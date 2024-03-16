@@ -21,8 +21,14 @@ PAGES_TO_SCRAPE = 10
 RETRIES = 3
 DELAY = 1
 
-# 1: onsite - 2: hybrid - 3: remote - empty: no value
-JOB_PLACES = [1, 2, 3, '']
+# 1: onsite - 2: remote - 3: hybrid
+JOB_PLACES = [1, 2, 3]
+
+JOB_PLACES_MAP = {
+    1: "On Site",
+    2: "Remote",
+    3: "Hybrid",
+}
 
 # Max number of days to scrape (take only the last DAYS_TO_SCRAPE days) 
 DAYS_TO_SCRAPE = 1
@@ -50,11 +56,12 @@ def get_with_retry(url, retries=RETRIES, delay=DELAY):
             logger.exception(e)
     return None
 
-def get_job_cards_main_info(soup):
+def get_job_cards_main_info(soup, place):
     """
     Get the job card info from the search results page
     Args:
         soup (BeautifulSoup): The beautiful soup object
+        place (str): The place of the job (On Site, Hybrid, Remote)
     Returns:
         list: The list of job cards
     """
@@ -92,8 +99,7 @@ def get_job_cards_main_info(soup):
             "jobLocation": location.text.strip() if location else "",
             "publishedAt": date,
             "url": job_url,
-            # TODO: add job place
-            "jobPlace": "On Site"
+            "jobPlace": JOB_PLACES_MAP[place],
         }
         joblist.append(job)
     return joblist
@@ -143,18 +149,13 @@ def get_search_queries():
 
     for title in titles:
         for location in locations:
-            search_queries.append({
-                "keywords": title,
-                "location": location,
-            })
-    """for title in titles:
-        for location in locations:
-            # for place in places:
+            for place in places:
                 search_queries.append({
                     "keywords": title,
                     "location": location,
-                    #"f_WT": place
-                })"""
+                    "place": place
+                })
+                
     return search_queries
 
 def remove_duplicates(joblist):
@@ -201,17 +202,15 @@ def get_job_cards(search_queries, rounds = ROUNDS, pages_to_scrape = PAGES_TO_SC
         for query in search_queries:
             keywords = quote(query["keywords"]) # URL encode the keywords
             location = quote(query["location"]) # URL encode the location
-            #place = query["f_WT"]
+            place = query["place"]
             timespan = "r" + str(DAYS_TO_SCRAPE * 24 * 60 * 60)
             
             for i in range (0, pages_to_scrape):
 				# Construct the URL
-                # TODO: enable job place
-                #url = f"http://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=&f_WT={place}&geoId=&f_TPR={timespan}&start={25*i}"
-                url = f"http://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&geoId=&f_TPR={timespan}&start={25*i}"
+                url = f"http://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_WT={place}&f_TPR={timespan}&start={25*i}"
 
                 soup = get_with_retry(url)
-                jobs = get_job_cards_main_info(soup)
+                jobs = get_job_cards_main_info(soup, place)
                 
                 if len(jobs) == 0:
                     logger.debug("(LinkedIn) No jobs found on page: %s", url)
