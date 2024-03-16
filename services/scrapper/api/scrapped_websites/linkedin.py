@@ -130,7 +130,7 @@ def get_job_description(soup):
         text = text.replace("Show less", "").replace("Show more", "")
         return text
     else:
-        logger.error("(LinkedIn) Could not find Job Description")
+        logger.error("(LinkedIn) Could not find Job Description, retrying...")
         return "Could not find Job Description"
 
 def get_search_queries():
