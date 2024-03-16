@@ -2,10 +2,9 @@ from flask import (
     Flask,
 )
 from instance import config
-from .logger import logger
 from pymongo import MongoClient
 from flask_sqlalchemy import SQLAlchemy
-import os, threading
+import os
 
 app = Flask(__name__)
 
@@ -30,18 +29,12 @@ db = SQLAlchemy(app)
 # endpoints for testing
 from .index import (
     health_check,
+    scrape,
 )
 
 # for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
 
-# srapped_websites endpoints (for testing)
-from .scrapped_websites.linkedin import (
-    linkedin_scrape,
-)
-from .scrapped_websites.wuzzuf import (
-    wuzzuf_scrape,
-)
+# srape endpoint (for testing)
 
-app.route("/linkedinScrape", methods=["GET"])(linkedin_scrape)
-app.route("/wuzzufScrape", methods=["GET"])(wuzzuf_scrape)
+app.route("/scrape", methods=["GET"])(scrape)

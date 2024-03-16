@@ -14,6 +14,25 @@ def insert_jobs(unstructured_jobs_db, jobs):
         # Get the unstructured jobs collection
         unstructured_jobs_collection = unstructured_jobs_db["unstructuredjobs"]
         
+        job = {
+            "title": "Software Engineer",
+            "company": "Google",
+            "jobLocation": "Cairo",
+            "type": "Full Time",
+            "skills": ["Python", "Java", "C++", "JavaScript"],
+            "url": "https://www.google.com",
+            "description": "A software engineer is responsible for developing and maintaining software systems.",
+            "publishedAt": "2021-07-20T12:00:00Z",
+            "scrappedAt": "2021-07-20T12:00:00Z",
+            "jobPlace": "Remote",
+            "numberOfApplicants": 10,
+            "neededExperience": 2,
+            "education": "Bachelor's degree",
+            "deletedAt": None
+        }
+        
+        jobs.append(job)
+        
         current_time = datetime.now(timezone.utc)
         
         # Add the scrappedAt field to the jobs
@@ -23,5 +42,5 @@ def insert_jobs(unstructured_jobs_db, jobs):
         # Insert the jobs into the collection
         unstructured_jobs_collection.insert_many(jobs, ordered=False)
     except Exception as e:
-        # Logged as debug because it is probably a common error of dubplicate compound key of title, company, publishedAt
-        logger.debug(str(e))
+        # Ignored because it is probably a common error of duplicated compound key of title, company, publishedAt
+        pass

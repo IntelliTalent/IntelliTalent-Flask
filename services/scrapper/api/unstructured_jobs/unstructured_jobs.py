@@ -1,7 +1,5 @@
 from flask import current_app as app
-from pymongo import ASCENDING
 from ..app import db_name
-from datetime import datetime, timezone
 
 # Connect to MongoDB
 database = app.mongo[db_name]
