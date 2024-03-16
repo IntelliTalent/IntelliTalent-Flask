@@ -13,12 +13,12 @@ app.config.from_object(config)
 
 # connect to MongoDB
 # to use this db, use app.mongo[db]
-#db_name = os.getenv('ScrappedJobsDB')
+db_name = os.getenv('ScrappedJobsDB')
 
-#app.mongo = MongoClient(app.config['MONGODB_URI'])
+app.mongo = MongoClient(app.config['MONGODB_URI'])
 # Structured Jobs DB
 # connect to PostgreSQL database
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 """ TODO:
     Define cronjob/s starting every X hours to handle this functionalities:
