@@ -4,7 +4,9 @@ from flask import (
 from instance import config
 from pymongo import MongoClient
 from flask_sqlalchemy import SQLAlchemy
-import os
+from apscheduler.schedulers.background import BackgroundScheduler
+from pytz import utc
+import atexit, os
 
 app = Flask(__name__)
 
@@ -38,3 +40,12 @@ app.route("/healthCheck", methods=["GET"])(health_check)
 # srape endpoint (for testing)
 
 app.route("/scrape", methods=["GET"])(scrape)
+
+scheduler = BackgroundScheduler(timezone=utc)
+
+# Cronjob to start the scraping process every 3 hours, passing the unstructured jobs db connection
+scheduler.add_job(func=scrape, args=(app.mongo[db_name],), trigger="interval", hours=3)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())

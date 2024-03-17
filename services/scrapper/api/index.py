@@ -9,17 +9,14 @@ def health_check():
     logger.debug("Health check")
     return "Hello World From Scrapper Service!"
 
-def scrape():
+def scrape(unstructured_jobs_db):
     """
     Start the scraping process
     Args:
-        None
+        unstructured_jobs_db (MongoClient): The unstructured jobs database
     Returns:
         dict: A dictionary containing the status of the scraping process
     """
-    # Connect to MongoDB, at unstructured jobs db
-    unstructured_jobs_db = app.mongo[db_name]
-    
     # Start the scraping threads
     # Start the linkedin scraping thread
     _thread.start_new_thread(
