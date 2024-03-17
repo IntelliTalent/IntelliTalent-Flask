@@ -31,9 +31,6 @@ JOB_TYPE = [
     "Volunteer"
 ]
 
-# The number of pages to scrape for each search query
-PAGES_TO_SCRAPE = 10
-
 def get_search_queries():
     """
     Get the search queries (enumerate the job titles and locations) from the config file
@@ -105,7 +102,7 @@ def get_jobs_details(jobs):
             "url": f"https://wuzzuf.net/{job_data['uri']}",
             "type": next((job_type for job_type in JOB_TYPE if any(job['displayedName'] == job_type for job in job_data['workTypes'])), "Other"),
             "skills": [skill['name'] for skill in job_data['keywords']],
-            "jobPlace": job_data['workplaceArrangement']['displayedName'] if job_data['workplaceArrangement'] else "On Site",
+            "jobPlace": job_data['workplaceArrangement']['displayedName'] if job_data['workplaceArrangement'] else None,
             "neededExperience": job_data['workExperienceYears']['min'],
             "education": job_data['candidatePreferences']['educationLevel']['name'],
         }
@@ -115,7 +112,7 @@ def get_jobs_details(jobs):
     
     return jobs
 
-def get_jobs(search_queries, pages_to_scrape=PAGES_TO_SCRAPE):
+def get_jobs(search_queries, pages_to_scrape=config.PAGES_TO_SCRAPE):
     """
     Get the jobs from the WUZZUF API
 

@@ -14,9 +14,6 @@ from langdetect.lang_detect_exception import LangDetectException
 # Number of times to try the same query (linkedin gives different results each time)
 ROUNDS = 1
 
-# The number of pages to scrape for each search query
-PAGES_TO_SCRAPE = 10
-
 # Number of times to retry to connect to the same url
 RETRIES = 4
 DELAY = 1
@@ -185,7 +182,7 @@ def safe_detect(text):
     except LangDetectException:
         return "en"
 
-def get_job_cards(search_queries, rounds = ROUNDS, pages_to_scrape = PAGES_TO_SCRAPE):
+def get_job_cards(search_queries, rounds = ROUNDS, pages_to_scrape = config.PAGES_TO_SCRAPE):
     """
     Get the job cards from the search results page
     Args:
