@@ -16,7 +16,7 @@ ROUNDS = 1
 
 # Number of times to retry to connect to the same url
 RETRIES = 4
-DELAY = 1
+DELAY = 2
 
 # 1: onsite - 2: remote - 3: hybrid
 JOB_PLACES = [1, 2, 3]
