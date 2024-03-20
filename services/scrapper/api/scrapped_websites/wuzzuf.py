@@ -167,3 +167,19 @@ def wuzzuf_scrape_thread(unstructured_jobs_db):
     
     end_time = tm.perf_counter()
     logger.info(f"Scraping Wuzzuf finished in {end_time - start_time:.2f} seconds")
+
+def wuzzuf_check_active_jobs(jobs):
+    """
+    Check the active jobs
+    Args:
+        jobs (list): The list of jobs
+    Returns:
+        dict: A dictionary containing the jobs status
+    """
+    # Check the active jobs
+    for job in jobs:
+        # TODO: Get the job status
+        job["isActive"] = True
+        del job["url"]
+        
+    return jobs
