@@ -260,6 +260,18 @@ def linkedin_scrape_thread(unstructured_jobs_db):
     
     end_time = tm.perf_counter()
     logger.info(f"Scraping LinkedIn finished in {end_time - start_time:.2f} seconds")
+    
+def check_closed_class(soup):
+    """
+    Check if the job is closed
+    Args:
+        soup (BeautifulSoup): The beautiful soup object
+    Returns:
+        bool: False if the job is closed, True otherwise
+    """
+    # Check if the job is closed
+    selected_elements = soup.select(".closed-job")
+    return len(selected_elements) == 0
 
 def linkedin_check_active_jobs(jobs):
     """
@@ -269,10 +281,19 @@ def linkedin_check_active_jobs(jobs):
     Returns:
         dict: A dictionary containing the jobs status
     """
+    # This is not a 100% accurate method to check if the job is active or not, 
+    # because linkedin sometimes return empty page for the job in the request,
+    # but this method ensures that it won't return false positive. (not active while it's active)
     # Check the active jobs
     for job in jobs:
-        # TODO: Get the job status
-        job["isActive"] = True
+        # Get the job status
+        job_page_soup = get_with_retry(job["url"])
+        if job_page_soup is None:
+            job["isActive"] = False
+            del job["url"]
+            continue
+        
+        job["isActive"] = check_closed_class(job_page_soup)
         del job["url"]
         
     return jobs
