@@ -91,6 +91,7 @@ def get_job_cards_main_info(soup, place):
         date = date_tag["datetime"] if date_tag else date_tag_new["datetime"] if date_tag_new else ""
         
         job = {
+            "jobId": job_posting_id,
             "title": title,
             "company": company.text.strip().replace("\n", " ") if company else "",
             "jobLocation": location.text.strip() if location else "",
@@ -291,9 +292,11 @@ def linkedin_check_active_jobs(jobs):
         if job_page_soup is None:
             job["isActive"] = False
             del job["url"]
+            del job["jobId"]
             continue
         
         job["isActive"] = check_closed_class(job_page_soup)
         del job["url"]
-        
+        del job["jobId"]
+    
     return jobs

@@ -5,6 +5,7 @@ from ..app import db_name
 database = app.mongo[db_name]
 
 unstructured_jobs_schema = {
+    'jobId': {'type': 'string', 'required': True},
     'title': {'type': 'string', 'required': True},
     'company': {'type': 'string', 'required': True},
     'jobLocation': {'type': 'string', 'required': True},

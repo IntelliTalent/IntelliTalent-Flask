@@ -8,7 +8,7 @@ from .scrapped_websites.wuzzuf import (
 )
 from .logger import logger
 import _thread, json
-    
+
 def health_check():
     logger.debug("Health check")
     return "Hello World From Scrapper Service!"
@@ -38,7 +38,7 @@ def scrape(unstructured_jobs_db):
         "status": "success",
         "message": "scrapping started"
     }
-    
+
 def check_active_jobs(body):
     """
     Check the active jobs
@@ -55,7 +55,7 @@ def check_active_jobs(body):
         return {
             "error": "No jobs found"
         }
-        
+    
     # Extract each platform jobs
     linkedin_jobs = [job for job in all_jobs if "linkedin" in job["url"]]
     wuzzuf_jobs = [job for job in all_jobs if "wuzzuf" in job["url"]]
@@ -73,4 +73,3 @@ def check_active_jobs(body):
     return json.dumps({
         "jobs": all_jobs_updated
     })
-    

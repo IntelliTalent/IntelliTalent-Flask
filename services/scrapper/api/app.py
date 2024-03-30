@@ -63,9 +63,11 @@ from .index import (
 # for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
 
-# srape endpoint (for testing)
+# scrape endpoint (for testing)
+def scrape_endpoint():
+    return make_response_json(scrape(app.mongo[db_name]))
 
-app.route("/scrape", methods=["GET"])(scrape)
+app.route("/scrape", methods=["GET"])(scrape_endpoint)
 
 # check active endpoint (for testing)
 

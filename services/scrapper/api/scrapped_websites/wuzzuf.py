@@ -69,10 +69,12 @@ def get_jobs_details(jobs):
     for job in jobs:
         job_ids.append(job['id'])
 
+        # Get the company name
         for fields in job['attributes']['computedFields']:
             if fields['name'] == 'company_name':
                 job_companies.append(fields['value'][0])
 
+    # Prepare the request to get the job details
     wuzzuf_job_api = WUZZUF_JOB_API + ','.join(job_ids)
     job_details_json = requests.get(wuzzuf_job_api).json()
     
@@ -94,6 +96,7 @@ def get_jobs_details(jobs):
         description = description.replace("-\n", "- ")
 
         job = {
+            "jobId": job['id'],
             "title": job_data['title'],
             "company": company,
             "description": description,
@@ -168,6 +171,25 @@ def wuzzuf_scrape_thread(unstructured_jobs_db):
     end_time = tm.perf_counter()
     logger.info(f"Scraping Wuzzuf finished in {end_time - start_time:.2f} seconds")
 
+def is_expired(date_string):
+    """
+    Check if the date is expired
+
+    Args:
+        date_string (str): The date string
+
+    Returns:
+        bool: True if the date is expired, False otherwise
+    """
+    # Parse the date string into a datetime object
+    expiration_date = datetime.strptime(date_string, "%m/%d/%Y %H:%M:%S")
+    
+    # Get the current date and time
+    current_date = datetime.now()
+    
+    # Compare the expiration date with the current date and time
+    return expiration_date < current_date
+
 def wuzzuf_check_active_jobs(jobs):
     """
     Check the active jobs
@@ -176,10 +198,25 @@ def wuzzuf_check_active_jobs(jobs):
     Returns:
         dict: A dictionary containing the jobs status
     """
+    
+    # Get the job ids and prepare the request
+    job_ids = [job["jobId"] for job in jobs]
+    
+    # Prepare the request to get the job details
+    wuzzuf_job_api = WUZZUF_JOB_API + ','.join(job_ids)
+    job_details_json = requests.get(wuzzuf_job_api).json()
+    
+    # Results map: [job_id] = is_active
+    active_jobs = {}
+    for job in job_details_json["data"]:
+        job_data = job["attributes"]
+        expire_data = job_data["expireAt"]
+        active_jobs[job["id"]] = not is_expired(expire_data)
+    
     # Check the active jobs
     for job in jobs:
-        # TODO: Get the job status
-        job["isActive"] = True
+        job["isActive"] = active_jobs.get(job["jobId"], False)
         del job["url"]
-        
+        del job["jobId"]
+    
     return jobs
