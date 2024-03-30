@@ -201,17 +201,18 @@ def wuzzuf_check_active_jobs(jobs):
     
     # Get the job ids and prepare the request
     job_ids = [job["jobId"] for job in jobs]
-    
-    # Prepare the request to get the job details
-    wuzzuf_job_api = WUZZUF_JOB_API + ','.join(job_ids)
-    job_details_json = requests.get(wuzzuf_job_api).json()
-    
-    # Results map: [job_id] = is_active
     active_jobs = {}
-    for job in job_details_json["data"]:
-        job_data = job["attributes"]
-        expire_data = job_data["expireAt"]
-        active_jobs[job["id"]] = not is_expired(expire_data)
+    
+    if len(job_ids):
+        # Prepare the request to get the job details
+        wuzzuf_job_api = WUZZUF_JOB_API + ','.join(job_ids)
+        job_details_json = requests.get(wuzzuf_job_api).json()
+        
+        # Results map: [job_id] = is_active
+        for job in job_details_json["data"]:
+            job_data = job["attributes"]
+            expire_data = job_data["expireAt"]
+            active_jobs[job["id"]] = not is_expired(expire_data)
     
     # Check the active jobs
     for job in jobs:
