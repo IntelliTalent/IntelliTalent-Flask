@@ -1,10 +1,9 @@
 import re
 import difflib
 import nltk
-from nltk.corpus import stopwords
 import threading
 import os
-from .skills import SKILLS
+from .constants import SKILLS, STOPWORDS
 
 # Constants
 SIMILARITY_THRESHOLD = 0.8
@@ -45,11 +44,8 @@ def remove_stopwords(text):
     # Tokenize the text into words
     words = nltk.word_tokenize(text)
     
-    # Get English stopwords
-    english_stopwords = set(stopwords.words('english'))
-    
     # Remove stopwords from the list of words
-    filtered_words = [word for word in words if word.lower() not in english_stopwords]
+    filtered_words = [word for word in words if word.lower() not in STOPWORDS]
     
     # Join the filtered words back into a string
     filtered_text = ' '.join(filtered_words)
@@ -148,6 +144,9 @@ def handle_current_skills(skills, similarity_threshold=SIMILARITY_THRESHOLD):
     extracted_skills = []
     
     for current_skill in skills:
+        max_similarity_score = 0
+        max_similarity_skill = None
+        
         # Get the most similar skill to the current word
         for skill in SKILLS:
             similarity_score = difflib.SequenceMatcher(None, current_skill.lower(), skill.lower()).ratio()
@@ -237,48 +236,59 @@ def prepare_job(unstructured_job):
         dict: The structured job that will be stored in the database
     """
     
+    # Check if there is no title for the job then discard it
+    title = unstructured_job.get("title", None)
+    if not title:
+        return None
+    
     structured_job = {
-        "jobId": unstructured_job["jobId"],
-        "title": unstructured_job["title"],
-        "company": unstructured_job["company"],
-        "jobLocation": unstructured_job["jobLocation"],
-        "type": unstructured_job["type"],
-        "url": unstructured_job["url"],
-        "description": unstructured_job["description"],
-        "publishedAt": unstructured_job["publishedAt"],
-        "jobPlace": unstructured_job["jobPlace"],
+        "jobId": unstructured_job.get("jobId", None),
+        "title": title,
+        "company": unstructured_job.get("company", ""),
+        "jobLocation": unstructured_job.get("jobLocation", ""),
+        "type": "Other" if not unstructured_job.get("type", None) else unstructured_job["type"],
+        "url": unstructured_job.get("url", ""),
+        "description": unstructured_job.get("description", ""),
+        "publishedAt": unstructured_job.get("publishedAt", ""),
+        "jobPlace": unstructured_job.get("jobPlace", None),
         "numberOfApplicants": unstructured_job.get("numberOfApplicants", None),
         "isActive": True,
         "isScrapped": True
     }
     
+    # Prepare the description
+    description = unstructured_job["description"].replace(".", "\n")
+    
     # Extract the skills from the description
-    skills = extract_skills(unstructured_job["description"])
+    skills = extract_skills(description)
 
     # Check if there is any skill found while scraping
-    if unstructured_job["skills"]:
+    current_skills = unstructured_job.get("skills", None)
+    if current_skills:
         # Get the current skills
         skills += handle_current_skills(unstructured_job["skills"])
     
     structured_job["skills"] = list(set(skills))
     
     # Check if there is any years of experience found while scraping
-    if unstructured_job["neededExperience"]:
-        structured_job["neededExperience"] = unstructured_job["neededExperience"]
+    neededExperience = unstructured_job.get("neededExperience", None)
+    if neededExperience:
+        structured_job["neededExperience"] = neededExperience
     else:
         # Take the minimum years of experience from the description
-        years_of_experience = extract_years_of_experience(unstructured_job["description"])
+        years_of_experience = extract_years_of_experience(description)
         structured_job["neededExperience"] = years_of_experience[0] if years_of_experience else None
     
     # Check if there is education found while scraping
-    if unstructured_job["education"] and unstructured_job["education"] != "Not Specified":
+    education = unstructured_job.get("education", None)
+    if education and education != "Not Specified":
         structured_job["education"] = unstructured_job["education"]
     else:
         # Take the minimum years of experience from the description
-        education = extract_education_level(unstructured_job["description"])
+        education = extract_education_level(description)
         structured_job["education"] = education if education else "Not Specified"
     
     # Set the computer science requirement
-    structured_job["csRequired"] = extract_is_computer_science(unstructured_job["description"])
+    structured_job["csRequired"] = extract_is_computer_science(description)
     
     return structured_job

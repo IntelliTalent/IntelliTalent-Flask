@@ -16,6 +16,8 @@ def get_job_info(data):
     
     new_jobs = []
     for job in jobs:
-        new_jobs.append(prepare_job(job))
+        new_job = prepare_job(job)
+        if new_job:
+            new_jobs.append(new_job)
     
     return json.dumps({"jobs": new_jobs})
