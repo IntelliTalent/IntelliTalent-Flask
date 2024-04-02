@@ -1,9 +1,5 @@
 from flask import request, jsonify, current_app as app
 import simplejson as json
-"""from .profile.profile_service import (
-    create_profile,
-    get_all_profiles
-)"""
 from .shared.helpers import (
     make_response_json,
 )
@@ -56,6 +52,8 @@ def health_check():
 
 def generate_cover_letter(data):
     logger.debug("Generating Cover Letter for data: %s", data)
+    
+    # access profile data from data["profile"]
     response = {
         "pdf": "https://www.google.com",
         "word": "https://www.google.com",

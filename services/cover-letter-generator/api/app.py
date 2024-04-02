@@ -37,7 +37,7 @@ rabbitmq_pass = os.getenv('RABBITMQ_PASS')
 rabbitmq_host = os.getenv('RABBITMQ_HOST')
 rabbitmq_port = os.getenv('RABBITMQ_PORT') 
 # for each service, the queue name should be unique
-rabbitmq_queue = os.getenv('RABBITMQ_COVER_LETTER_QUEUE')
+rabbitmq_queue = os.getenv('RABBITMQ_COVER_LETTER_GENERATOR_QUEUE')
 
 app = Flask(__name__)
 
@@ -85,13 +85,9 @@ from .index import (
 # for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
 
-def generate_cover_letter_endpoint(profile_id):
+def generate_cover_letter_endpoint():
     body = request.get_json()
-    data = {
-        **body,
-        "profile_id": profile_id,
-    }
-    return make_response_json(json.loads(generate_cover_letter(data)))
+    return make_response_json(json.loads(generate_cover_letter(body)))
 
 # for testing, replica of generateCoverLetter pattern
-app.route("/generateCoverLetter/<profile_id>", methods=["POST"])(generate_cover_letter_endpoint)
+app.route("/generateCoverLetter", methods=["POST"])(generate_cover_letter_endpoint)
