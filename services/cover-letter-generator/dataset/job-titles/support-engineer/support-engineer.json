@@ -1,0 +1,22 @@
+{
+    "intro": [
+        "I am applying for the $position position at $applying_company.",
+        "I am excited to apply for the $position role at $applying_company.",
+        "I am applying for the $position position at $applying_company."
+    ],
+    "experience": [
+        "I have $total_exp_years years of experience in IT support, including $company_exp_years years as a $worked_position.",
+        "I have $total_exp_years years of experience in IT support, including $company_exp_years years as a $worked_position.",
+        "I have over $total_exp_years years of experience in IT Support, with a focus on network administration, and customer service."
+    ],
+    "skills": [
+        "I am proficient in $skill, $skill, and $skill.",
+        "I have a strong technical background, with expertise in $skill, $skill, and $skill.",
+        "I am known for my ability to handle high-pressure situations and for my excellent customer service skills."
+    ],
+    "closing": [
+        "I believe that I am a strong candidate for this role.",
+        "I am confident that I can bring value to your team.",
+        "Thank you for considering my application"
+    ]
+}

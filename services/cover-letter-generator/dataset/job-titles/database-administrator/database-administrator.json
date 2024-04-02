@@ -1,0 +1,26 @@
+{
+    "intro": [
+        "I am writing to apply for the $position position at $applying_company.",
+        "I am writing to express my interest in the $position position at $applying_company.",
+        "I am writing to apply for the $position position at $applying_company.",
+        "I am excited to apply for the $position position at $applying_company."
+    ],
+    "experience": [
+        "I have over $company_exp_years years of experience in database administration, and I am proficient in $skill and $skill.",
+        "With over $company_exp_years years of experience in database administration, I have developed a comprehensive understanding of database systems.",
+        "I am currently employed at $worked_company where I manage the company's database systems.",
+        "I have a strong technical background, with a particular focus on database structures, data modeling, and complex queries."
+    ],
+    "skills": [
+        "My strong analytical and problem-solving skills have enabled me to effectively manage databases and ensure their optimal performance.",
+        "I am confident that my experience and skills make me a strong candidate for this position.",
+        "I am confident that my skills and experience make me a strong candidate for this role.",
+        "I am confident that my skills in $skill, $skill, and $skill, along with my passion for technology, make me a strong candidate for this role."
+    ],
+    "closing": [
+        "I am eager to bring my skills and experiences to $applying_company and contribute to its success.",
+        "I am excited about the opportunity to work with a dynamic team and contribute my skills to your organization.",
+        "I am eager to bring my expertise to $applying_company and help the company achieve its goals.",
+        "I am eager to bring my strong problem-solving skills and commitment to quality to your team."
+    ]
+}

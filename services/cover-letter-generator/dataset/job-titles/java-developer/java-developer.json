@@ -1,0 +1,22 @@
+{
+    "intro": [
+        "I am writing to express my interest in the $position position at $applying_company.",
+        "I am writing to express my interest in the $position role at $applying_company.",
+        "I am excited to apply for the $position position at $applying_company."
+    ],
+    "experience": [
+        "My professional experience includes designing and implementing $skill applications, managing the full software lifecycle, and troubleshooting and resolving technical issues.",
+        "I am currently a $worked_position at $worked_company, where I have successfully participated at numerous projects.",
+        "I have over $total_exp_years years of experience in software engineering and have worked as a $position at $worked_company."
+    ],
+    "skills": [
+        "I also possess strong skills in $skill, $skill, and $skill.",
+        "With $total_exp_years years of experience in software engineering, I have a strong command over $skill, and $skill.",
+        "I have a strong understanding of $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "I am certain that $total_exp_years years make me a strong candidate for this position.",
+        "I am excited about the opportunity to bring my experience to your team.",
+        "I am eager to bring my technical skills and passion for software to $applying_company."
+    ]
+}

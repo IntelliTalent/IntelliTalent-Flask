@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I have a Bachelor's degree in Computer Science and $total_exp_years years of experience in web development."
+    ],
+    "experience": [
+        "I believe that my qualifications make me a strong candidate for this position."
+    ],
+    "skills": [
+        "I am proficient in $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "Thank you for considering my application."
+    ]
+}

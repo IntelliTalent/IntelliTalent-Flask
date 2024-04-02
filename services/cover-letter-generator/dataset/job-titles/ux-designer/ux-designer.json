@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm applying for the $position at $applying_company."
+    ],
+    "experience": [
+        "With a degree in Computer Science and over $total_exp_years years of hands-on experience in this field, I will enhance this position performance."
+    ],
+    "skills": [
+        "I bring valuable skills in $skill, $skill, and $skill. I'm eager to contribute my expertise to your team."
+    ],
+    "closing": [
+        "Thank you for considering my application."
+    ]
+}
