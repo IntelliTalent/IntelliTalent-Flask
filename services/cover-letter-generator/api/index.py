@@ -1,12 +1,11 @@
 from flask import request, jsonify, current_app as app
 import simplejson as json
-"""from .profile.profile_service import (
-    create_profile,
-    get_all_profiles
-)"""
 from .shared.helpers import (
     make_response_json,
 )
+from flask.helpers import send_file
+from instance import config
+from .helpers.helper import generate_cover_letter_data
 from .logger import logger
 
 '''def main():
@@ -51,15 +50,38 @@ from .logger import logger
         return make_response_json({"message": str(e), "status": 500}, 500)'''
     
 def health_check():
+    """
+    Health check
+    """
     logger.debug("Health check")
     return "Hello World From Cover Letter Generator Service!"
 
 def generate_cover_letter(data):
+    """
+    Generate Cover Letter
+
+    Args:
+        data (dict): data to generate cover letter
+    Returns:
+        str: response
+    """
     logger.debug("Generating Cover Letter for data: %s", data)
+    
+    user_info = data["profile"]
+    
+    wanted_job_info = {
+        "jobTitle": data["jobTitle"],
+        "companyName": data["companyName"]
+    }
+    
+    cover_letter_text, filename = generate_cover_letter_data(user_info, wanted_job_info)
+    
+    # access profile data from data["profile"]
     response = {
-        "pdf": "https://www.google.com",
-        "word": "https://www.google.com",
-        "text": """This is a simple cover letter!
-Line 2!"""
+        "word": f"http://{config.server_ip}:3002/{filename}.docx",
+        "text": cover_letter_text
     }
     return json.dumps(response)
+
+def get_file(filename):
+    return send_file(f"generated/{filename}")

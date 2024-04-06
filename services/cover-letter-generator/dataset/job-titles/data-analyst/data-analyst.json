@@ -1,0 +1,22 @@
+{
+    "intro": [
+        "I am excited to apply for the $position position at $applying_company.",
+        "I am writing to express my interest in the $position position at $applying_company. With my strong background in data analysis, visualization, and $skill, I believe I am well-suited for this role.",
+        "I am writing to express my interest in the $position position at $applying_company. With my strong background in data analytics and experience in interdisciplinary teams, I believe I am an ideal candidate for this role."
+    ],
+    "experience": [
+        "I have a strong background in data analysis and have been working in this field for over $total_exp_years years.",
+        "In my current position as a $worked_position at $worked_company, I have successfully translated business requirements into technical reporting requirements, generating valuable insights and supporting decision making. I have also built and maintained reports, dashboards, and data automation systems, ensuring efficient data analysis and visualization.",
+        "In my current position as a $worked_position at $worked_company, I have gained extensive experience in data analysis, $skill, and reporting."
+    ],
+    "skills": [
+        "I am proficient in $skill, $skill, and $skill, and have experience in $skill.",
+        "I have developed a highly analytical and detail-oriented mindset. My proficiency in data visualization tools such as $skill and my expertise in $skill and relational databases make me a valuable asset to any data-driven organization.",
+        "I am particularly excited about the opportunity to contribute to $applying_company's mission. My passion for data analytics aligns perfectly with the company's goals, and I am eager to apply my skills and knowledge to support the team and ensure the success of projects."
+    ],
+    "closing": [
+        "Thank you for considering my application.",
+        "I am excited about the opportunity to join the world-class team at $applying_company and contribute to the growth and success of the company. Thank you for considering my application.",
+        "Thank you for considering my application. I am confident that my experience, skills, and qualifications make me a strong fit for this position. I look forward to the opportunity to discuss how I can contribute further."
+    ]
+}

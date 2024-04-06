@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm excited to apply for the $position position at $applying_company. With over $total_exp_years years of experience, I specialize in data collection, organization, and analysis. My passion for presenting insightful projections and strategies to enhance business operations aligns with the tech industry's challenges."
+    ],
+    "experience": [
+        "In my current role at $worked_company, I utilize $skill and coding expertise to collect and organize data, providing impactful reports and pitches for business improvement. Leading a team of professionals, I ensure accurate data procedures and deliver clear reports for executive strategies."
+    ],
+    "skills": [
+        "My skills include organization, attention to detail, and critical thinking, enabling effective strategies across various industries."
+    ],
+    "closing": [
+        "Thank you for considering my application. I'm eager to contribute my deep knowledge of databases and business operations to $applying_company. Feel free to contact me with any questions or to arrange an interview."
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "intro": [
+        "I am excited to apply for the $position position at $applying_company.",
+        "I am writing to apply for the $position position at $applying_company.",
+        "I am excited to apply for the $position position at $applying_company.",
+        "I am writing to apply for the $position position at $applying_company.",
+        "I am writing to apply for the $position position at $applying_company."
+    ],
+    "experience": [
+        "My past experience includes working as a $worked_position at $worked_company.",
+        "I was a $worked_position at $worked_company for $company_exp_years years.",
+        "My experience as an $worked_position at $worked_company has equipped me with the practical skills required for this role.",
+        "I have a strong background in $skill and $skill, with a particular focus on developing AI models.",
+        "I was a $worked_position at $worked_company for $company_exp_years years."
+    ],
+    "skills": [
+        "I am proficient in $skill, $skill, and $skill.",
+        "I have skills of $skill, $skill and $skill.",
+        "I am proficient in $skill and $skill, and have a deep understanding of $skill principles.",
+        "I am confident that my skills and experience make me a strong fit for this position.",
+        "I have skills of $skill, $skill and $skill."
+    ],
+    "closing": [
+        "I am confident that my skills and qualifications make me a strong candidate for this position.",
+        "I am confident that my skills and experience make me a strong candidate for this role.",
+        "I look forward to the opportunity of contributing to $applying_company's success.",
+        "I look forward to the possibility of contributing to $applying_company's AI team.",
+        "I am confident that my skills and experience make me a strong candidate for this role."
+    ]
+}
