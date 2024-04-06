@@ -16,13 +16,6 @@ import redis"""
 import os, threading, json
 
 def handle_command(command, data):
-    """ TODO:
-        Define command/s to handle this functionalities:
-           - Given a profile ID, a company name (optional), and job title.
-           - Generate cover letter in 3 formats, Word (upload and put link in response), PDF (upload and put link in response), and Txt (put bare text in response).
-           - All the 3 formats must be in the same response.
-    """
-    
     if command == "healthCheck":
         return health_check()
     
@@ -78,6 +71,7 @@ rabbitmq_thread.start()
 from .index import (
     health_check,
     generate_cover_letter,
+    get_file
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
@@ -91,3 +85,6 @@ def generate_cover_letter_endpoint():
 
 # for testing, replica of generateCoverLetter pattern
 app.route("/generateCoverLetter", methods=["POST"])(generate_cover_letter_endpoint)
+
+# route files
+app.route("/generated/<filename>", methods=["GET"])(get_file)

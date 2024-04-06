@@ -14,11 +14,15 @@ RUN python -m venv venv
 
 RUN source venv/bin/activate
 
+RUN apk add python3-dev build-base gcc
+
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
 ARG APP
+
+ENV APP=${APP}
 
 COPY ./services/${APP}/ .
 
