@@ -434,7 +434,7 @@ def generate_cover_letter_data(user_info, wanted_job_info):
     
     user_fullname = user_info["fullName"].replace(" ", "-")
     
-    filename = f'api/generated/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}'
+    filename = f'api/generated-coverletters/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}'
         
     # print to docx
     write_to_word(filled_cover_letter, filename)
