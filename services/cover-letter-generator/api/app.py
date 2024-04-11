@@ -87,4 +87,4 @@ def generate_cover_letter_endpoint():
 app.route("/generateCoverLetter", methods=["POST"])(generate_cover_letter_endpoint)
 
 # route files
-app.route("/generated/<filename>", methods=["GET"])(get_file)
+app.route("/generated-coverletters/<filename>", methods=["GET"])(get_file)
