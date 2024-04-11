@@ -10,143 +10,152 @@ def health_check():
     logger.info("Health check")
     return "Hello World From CV Generator Service!"
 
-heading_data = {
-    "fullname": "John Doe",
-    "phoneNumber": "123456789",
-    "email": "moaz25jan2015@gmail.com",
-    "gitHub": "https://github.com",
-    "linkedIn": "https://linkedin.com",
-    "city": "Cairo",
-    "country": "Egypt"
-}
-objective_data = {
-    "summary": "I'm a software engineer with a passion for learning and teaching. I love working with Python, Django, and JavaScript. I'm currently looking for a full-time software engineering position."
-}
-education_data = [
-    {
-        "schoolName": "University of Engineering and Technology, Lahore",
-        "degree": "Bachelor of Science in Computer Science",
-        "startDate": "Sep 2019",
-        "endDate": "Present",
-        "description": "Relevant Coursework: Data Structures, Algorithms, Database Systems, Operating Systems, Computer Networks"
-    },
-    {
-        "schoolName": "University of Engineering and Technology, Lahore",
-        "degree": "Bachelor of Science in Computer Science",
-        "startDate": "Sep 2019",
-        "endDate": "Present",
-        "description": "Relevant Coursework: Data Structures, Algorithms, Database Systems, Operating Systems, Computer Networks"
-    }
-]
-projects_data = [
-    {
-        "name": "Project 1",
-        "description": "Project Description 1",
-        "skills": "Python, Django, HTML, CSS, JavaScript"
-    },
-    {
-        "name": "Project 2",
-        "description": "Project Description 2",
-        "skills": "HTML, CSS, JavaScript"
-    }
-]
-experience_data = [
-    {
-        "jobTitle": "Software Engineer Intern",
-        "companyName": "Company Name",
-        "startDate": "June 2021",
-        "endDate": "August 2021",
-        "description": "Worked on a project"
-    },
-    {
-        "jobTitle": "Software Engineer Intern",
-        "companyName": "Company Name",
-        "startDate": "June 2021",
-        "endDate": "Present",
-        "description": "Worked on a project"
-    }
-]
-skills_data = [
-    {
-        "category": "Languages",
-        "list": "English, Arabic"
-    },
-    {
-        "category": "Technologies",
-        "list": "Python, Django, HTML, CSS, JavaScript"
-    }
-]
-certificates_data = [
-    {
-        "title": "Certificate 1",
-        "authority": "Authority 1",
-        "issuedAt": "June 2021",
-        "validUntil": "Present",
-        "url": "https://certificate.com"
-    },
-    {
-        "title": "Certificate 2",
-        "authority": "Authority 2",
-        "issuedAt": "June 2021",
-        "validUntil": "Jan 2022",
-        "url": "https://certificate2.com"
-    }
-]
-
 def generate_CV(data):
-    logger.info("Generating CV")
-    logger.debug("for data: %s", data)
-    
-    # Create Document
-    document = Document()
-    style = document.styles["Normal"]
-    style.paragraph_format.space_before = Cm(0.2)
-    style.paragraph_format.space_after = 0
-    style.paragraph_format.line_spacing = 1.5
-    font = style.font
-    font.name = "Times New Roman"
-    font.size = Pt(11)
-    font.bold = False
+    try:
+        logger.info("Generating CV")
+        logger.debug("for data: %s", data)
+        
+        profile = data["profile"]
+        
+        document = Document()
+        style = document.styles["Normal"]
+        style.paragraph_format.space_before = Cm(0.2)
+        style.paragraph_format.space_after = 0
+        style.paragraph_format.line_spacing = 1.5
+        font = style.font
+        font.name = "Times New Roman"
+        font.size = Pt(11)
+        font.bold = False
 
-    sections = document.sections
-    for section in sections:
-        section.top_margin = Cm(1)
-        section.bottom_margin = Cm(1)
-        section.left_margin = Mm(7.5)
-        section.right_margin = Mm(7.5)
-        # A4 size
-        section.page_height = Mm(297)
-        section.page_width = Mm(210)
+        sections = document.sections
+        for section in sections:
+            section.top_margin = Cm(1)
+            section.bottom_margin = Cm(1)
+            section.left_margin = Mm(7.5)
+            section.right_margin = Mm(7.5)
+            section.page_height = Mm(297)
+            section.page_width = Mm(210)
+            
+        # handling profile data
+        
+        # objective data
+        summary = profile.get("summary")
+        
+        objective_data = {
+            "summary": summary
+        }
+        
+        # cleanup objective keys
+        del profile["summary"]
+        
+        # education data
+        education_data = profile.get("educations")
+        
+        # cleanup education keys
+        if education_data:
+            del profile["educations"]
+        
+        # experience data
+        experience_data = profile.get("experiences")
+        
+        # cleanup experience keys
+        if experience_data:
+            del profile["experiences"]
+            
+        # projects data
+        projects_data = profile.get("projects")
+        
+        for project in projects_data:
+            if project.get("skills"):
+                project["skills"] = ", ".join(project["skills"])
+            
+        # cleanup projects keys
+        if projects_data:
+            del profile["projects"]
+            
+        # skills data
+        languages_list = profile.get("languages")
+        skills_list = profile.get("skills")
+        
+        skills_data = []
+        
+        if languages_list and len(languages_list) > 0:
+            skills_data.append({
+                "category": "Languages",
+                "list": ", ".join(languages_list)
+            })
+            
+        if skills_list and len(skills_list) > 0:
+            skills_data.append({
+                "category": "Technologies",
+                "list": ", ".join(skills_list)
+            })
+        
+        # cleanup skills keys
+        if languages_list:
+            del profile["languages"]
+        if skills_list:
+            del profile["skills"]
+            
+        # certificates data
+        certificates_data = profile.get("certificates")
+        
+        # cleanup certificates keys
+        if certificates_data:
+            del profile["certificates"]
+            
+        # heading data
+        heading_data = profile
 
-    heading(document, heading_data)
-    objective(document, objective_data)
-    education(document, education_data)
-    experience(document, experience_data)
-    projects(document, projects_data)
-    skills(document, skills_data)
-    certificates(document, certificates_data)
+        heading(document, heading_data)
+        objective(document, objective_data)
+        if education_data and len(education_data) > 0:
+            education(document, education_data)
+        if experience_data and len(experience_data) > 0:
+            experience(document, experience_data)
+        if projects_data and len(projects_data) > 0:
+            projects(document, projects_data)
+        if skills_data and len(skills_data) > 0:
+            skills(document, skills_data)
+        if certificates_data and len(certificates_data) > 0:
+            certificates(document, certificates_data)
 
-    # Meta Data
-    document.core_properties.author = heading_data["fullname"]
-    document.core_properties.title = heading_data["fullname"] + " CV"
-    document.core_properties.subject = "CV"
-    document.core_properties.keywords = "CV, Resume, " + heading_data["fullname"]
-    document.core_properties.category = "CV"
-    document.core_properties.language = "en-US"
-    
-    user_fullname = heading_data["fullname"].replace(" ", "-")
-    
-    filename = f'api/generated-cvs/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}.docx'
+        # Meta Data
+        document.core_properties.author = heading_data["fullName"]
+        document.core_properties.title = heading_data["fullName"] + " CV"
+        document.core_properties.subject = "CV"
+        document.core_properties.keywords = "CV, Resume, " + heading_data["fullName"]
+        document.core_properties.category = "CV"
+        document.core_properties.language = "en-US"
+        
+        user_fullname = heading_data["fullName"].replace(" ", "-")
+        
+        filename = f'api/generated-cvs/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}.docx'
 
-    document.save(filename)
-    
-    # remove api word from the filename, because when routing to the file, it will be added automatically
-    filename = filename.replace("api/", "")
-    
-    response = {
-        "word": f"http://{config.server_ip}:3008/{filename}"
-    }
-    return json.dumps(response)
+        document.save(filename)
+        
+        # remove api word from the filename, because when routing to the file, it will be added automatically
+        filename = filename.replace("api/", "")
+        
+        response = {
+            "word": f"http://{config.server_ip}:3008/{filename}"
+        }
+        return json.dumps(response)
+    except Exception as e:
+        logger.exception("Error while generating CV: %s", e)
+        return json.dumps({
+            "message": "Error while generating CV!",
+            "error": str(e),
+            "status": 500
+        })
 
 def get_file(filename):
-    return send_file(f"generated-cvs/{filename}")
+    try:
+        return send_file(f"generated-cvs/{filename}")
+    except Exception as e:
+        logger.exception("Error while getting file: %s", e)
+        return json.dumps({
+            "message": "Error while getting file!",
+            "error": str(e),
+            "status": 404
+        })

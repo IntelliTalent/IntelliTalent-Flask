@@ -9,229 +9,183 @@ SUBHEADINGLINESPACE = 1.15
 CONTENTLINESPACE = 1.5
 SKILLWIDTH = 9
 
-def insert_hr(paragraph):
+def insert_hr(target_paragraph):
     """
-    Insert a horizontal line into a paragraph.
+    Insert a horizontal line into a target_paragraph.
     
     Args:
-        paragraph: The paragraph to insert the horizontal line into.
+        target_paragraph: The paragraph to insert the horizontal line into.
     """
-    p = paragraph._p  # p is the <w:p> XML element
-    pPr = p.get_or_add_pPr()
-    pBdr = docx.oxml.shared.OxmlElement('w:pBdr')
-    pPr.insert_element_before(pBdr,
-        'w:shd', 'w:tabs', 'w:suppressAutoHyphens', 'w:kinsoku', 'w:wordWrap',
-        'w:overflowPunct', 'w:topLinePunct', 'w:autoSpaceDE', 'w:autoSpaceDN',
-        'w:bidi', 'w:adjustRightInd', 'w:snapToGrid', 'w:spacing', 'w:ind',
-        'w:contextualSpacing', 'w:mirrorIndents', 'w:suppressOverlap', 'w:jc',
-        'w:textDirection', 'w:textAlignment', 'w:textboxTightWrap',
-        'w:outlineLvl', 'w:divId', 'w:cnfStyle', 'w:rPr', 'w:sectPr',
-        'w:pPrChange'
-    )
-    bottom = docx.oxml.shared.OxmlElement('w:bottom')
-    bottom.set(docx.oxml.ns.qn('w:val'), 'single')
-    bottom.set(docx.oxml.ns.qn('w:sz'), '6')
-    bottom.set(docx.oxml.ns.qn('w:space'), '1')
-    bottom.set(docx.oxml.ns.qn('w:color'), 'auto')
-    pBdr.append(bottom)
-    
-def get_or_create_hyperlink_style(d):
+    paragraph_element = target_paragraph._p
+    paragraph_properties = paragraph_element.get_or_add_pPr()
+    paragraph_border = docx.oxml.shared.OxmlElement('w:pBdr')
+    paragraph_properties.insert_element_before(paragraph_border, *['w:' + tag for tag in ['shd', 'tabs', 'suppressAutoHyphens', 'kinsoku', 'wordWrap', 'overflowPunct', 'topLinePunct', 'autoSpaceDE', 'autoSpaceDN', 'bidi', 'adjustRightInd', 'snapToGrid', 'spacing', 'ind', 'contextualSpacing', 'mirrorIndents', 'suppressOverlap', 'jc', 'textDirection', 'textAlignment', 'textboxTightWrap', 'outlineLvl', 'divId', 'cnfStyle', 'rPr', 'sectPr', 'pPrChange']])
+    bottom_border = docx.oxml.shared.OxmlElement('w:bottom')
+    for attribute, value in [('w:val', 'single'), ('w:sz', '6'), ('w:space', '1'), ('w:color', 'auto')]:
+        bottom_border.set(docx.oxml.ns.qn(attribute), value)
+    paragraph_border.append(bottom_border)
+
+def get_or_create_hyperlink_style(document):
     """
     Get or create the hyperlink style in a document.
     
     Args:
-        d: The document to get or create the hyperlink style in.
+        document: The document to get or create the hyperlink style in.
     Returns:
         The name of the hyperlink style.
     """
-    if "Hyperlink" not in d.styles:
-        if "Default Character Font" not in d.styles:
-            ds = d.styles.add_style("Default Character Font",
-                                    docx.enum.style.WD_STYLE_TYPE.CHARACTER,
-                                    True)
-            ds.element.set(docx.oxml.shared.qn('w:default'), "1")
-            ds.priority = 1
-            ds.hidden = True
-            ds.unhide_when_used = True
-            del ds
-        hs = d.styles.add_style("Hyperlink",
-                                docx.enum.style.WD_STYLE_TYPE.CHARACTER,
-                                True)
-        hs.base_style = d.styles["Default Character Font"]
-        hs.unhide_when_used = True
-        hs.font.color.rgb = docx.shared.RGBColor(0x05, 0x63, 0xC1)
-        hs.font.underline = True
-        del hs
-
+    if "Hyperlink" not in document.styles:
+        if "Default Character Font" not in document.styles:
+            default_style = document.styles.add_style("Default Character Font", docx.enum.style.WD_STYLE_TYPE.CHARACTER, True)
+            default_style.element.set(docx.oxml.shared.qn('w:default'), "1")
+            default_style.priority = default_style.hidden = 1
+            default_style.unhide_when_used = True
+            del default_style
+        hyperlink_style = document.styles.add_style("Hyperlink", docx.enum.style.WD_STYLE_TYPE.CHARACTER, True)
+        hyperlink_style.base_style = document.styles["Default Character Font"]
+        hyperlink_style.unhide_when_used = True
+        hyperlink_style.font.color.rgb = docx.shared.RGBColor(0x05, 0x63, 0xC1)
+        hyperlink_style.font.underline = True
+        del hyperlink_style
     return "Hyperlink"
 
-def add_hyperlink(paragraph, text, url):
+def add_hyperlink(target_paragraph, hyperlink_text, hyperlink_url):
     """
-    Add a hyperlink to a paragraph.
+    Add a hyperlink to a target_paragraph.
     
     Args:
-        paragraph: The paragraph to add the hyperlink to.
-        text: The text of the hyperlink.
-        url: The URL of the hyperlink.
+        target_paragraph: The paragraph to add the hyperlink to.
+        hyperlink_text: The text of the hyperlink.
+        hyperlink_url: The URL of the hyperlink.
     Returns:
         The hyperlink element.
     """
-    # This gets access to the document.xml.rels file and gets a new relation id value
-    part = paragraph.part
-    r_id = part.relate_to(url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+    document_part = target_paragraph.part
+    relationship_id = document_part.relate_to(hyperlink_url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+    hyperlink_element = docx.oxml.shared.OxmlElement('w:hyperlink')
+    hyperlink_element.set(docx.oxml.shared.qn('r:id'), relationship_id)
+    new_run = docx.text.run.Run(docx.oxml.shared.OxmlElement('w:r'), target_paragraph)
+    new_run.text = hyperlink_text
+    new_run.style = get_or_create_hyperlink_style(document_part.document)
+    hyperlink_element.append(new_run._element)
+    target_paragraph._p.append(hyperlink_element)
+    return hyperlink_element
 
-    # Create the w:hyperlink tag and add needed values
-    hyperlink = docx.oxml.shared.OxmlElement('w:hyperlink')
-    hyperlink.set(docx.oxml.shared.qn('r:id'), r_id, )
-
-    # Create a new run object (a wrapper over a 'w:r' element)
-    new_run = docx.text.run.Run(
-        docx.oxml.shared.OxmlElement('w:r'), paragraph)
-    new_run.text = text
-
-    # Set the run's style to the builtin hyperlink style, defining it if necessary
-    new_run.style = get_or_create_hyperlink_style(part.document)
-
-    # Join all the xml elements together
-    hyperlink.append(new_run._element)
-    paragraph._p.append(hyperlink)
-    return hyperlink
-
-def heading_style(paragraph, dual=True):
+def heading_style(target_paragraph, is_dual_heading=True):
     """
-    Apply the heading style to a paragraph.
+    Apply the heading style to a target_paragraph.
     
     Args:
-        paragraph: The paragraph to apply the heading style to.
-        dual: Whether the heading is a dual heading.
+        target_paragraph: The paragraph to apply the heading style to.
+        is_dual_heading: Whether the heading is a dual heading.
     """
-    paragraph_format = paragraph.paragraph_format
-    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    paragraph_format.space_before = 0
-    paragraph_format.space_after = 0
-    paragraph_format.line_spacing = HEADINGLINESPACE
-    paragraph.runs[0].bold = True
-    paragraph.runs[0].font.size = Pt(11)
-    paragraph.runs[1].bold = False
-    paragraph.runs[1].font.size = Pt(11)
-    if dual:
-        paragraph.runs[2].bold = True
-        paragraph.runs[2].font.size = Pt(11)
-        paragraph.runs[3].bold = False
-        paragraph.runs[3].font.size = Pt(11)
+    target_paragraph.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    target_paragraph.paragraph_format.space_before = target_paragraph.paragraph_format.space_after = 0
+    target_paragraph.paragraph_format.line_spacing = HEADINGLINESPACE
+    target_paragraph.runs[0].bold = True
+    target_paragraph.runs[0].font.size = Pt(11)
+    target_paragraph.runs[1].bold = False
+    target_paragraph.runs[1].font.size = Pt(11)
+    if is_dual_heading:
+        target_paragraph.runs[2].bold = True
+        target_paragraph.runs[2].font.size = Pt(11)
+        target_paragraph.runs[3].bold = False
+        target_paragraph.runs[3].font.size = Pt(11)
 
-def sub_heading_style(paragraph):
+def sub_heading_style(target_paragraph):
     """
-    Apply the sub-heading style to a paragraph.
+    Apply the sub-heading style to a target_paragraph.
     
     Args:
-        paragraph: The paragraph to apply the sub-heading style to.
+        target_paragraph: The paragraph to apply the sub-heading style to.
     """
-    paragraph_format = paragraph.paragraph_format
-    paragraph_format.space_before = 0
-    paragraph_format.space_after = Cm(0.2)
-    paragraph_format.line_spacing = SUBHEADINGLINESPACE
-    paragraph.runs[0].bold = True
-    paragraph.runs[0].font.size = Pt(14)
-    insert_hr(paragraph)
+    target_paragraph.paragraph_format.space_before = 0
+    target_paragraph.paragraph_format.space_after = Cm(0.2)
+    target_paragraph.paragraph_format.line_spacing = SUBHEADINGLINESPACE
+    target_paragraph.runs[0].bold = True
+    target_paragraph.runs[0].font.size = Pt(14)
+    insert_hr(target_paragraph)
 
-def content_heading_style(paragraph):
+def content_heading_style(target_paragraph):
     """
-    Apply the content heading style to a paragraph.
+    Apply the content heading style to a target_paragraph.
     
     Args:
-        paragraph: The paragraph to apply the content heading style to.
+        target_paragraph: The paragraph to apply the content heading style to.
     """
-    paragraph_format = paragraph.paragraph_format
-    paragraph_format.space_before = 0
-    paragraph_format.space_after = 0
-    paragraph_format.line_spacing = CONTENTLINESPACE
-    paragraph.runs[0].bold = True
-    paragraph.runs[0].font.size = Pt(13)
+    target_paragraph.paragraph_format.space_before = target_paragraph.paragraph_format.space_after = 0
+    target_paragraph.paragraph_format.line_spacing = CONTENTLINESPACE
+    target_paragraph.runs[0].bold = True
+    target_paragraph.runs[0].font.size = Pt(13)
 
-def table_style(table):
+def table_style(target_table):
     """
-    Apply the table style to a table.
+    Apply the table style to a target_table.
     
     Args:
-        table: The table to apply the table style to.
+        target_table: The table to apply the table style to.
     """
-    table.autofit = False 
-    table.allow_autofit = False
-    table.cell(0,0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
-    table.cell(0,1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    table0_format = table.cell(0,0).paragraphs[0].paragraph_format
-    table1_format = table.cell(0,1).paragraphs[0].paragraph_format
-    table0_format.space_before = 0
-    table0_format.space_after = 0
-    table0_format.line_spacing = CONTENTLINESPACE
-    table1_format.space_before = 0
-    table1_format.space_after = 0
-    table1_format.line_spacing = CONTENTLINESPACE
-    table.cell(0,0).vertical_alignment = WD_ALIGN_VERTICAL.CENTER
-    table.cell(0,1).vertical_alignment = WD_ALIGN_VERTICAL.CENTER
-    for row in table.rows:
+    target_table.autofit = target_table.allow_autofit = False
+    target_table.cell(0,0).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
+    target_table.cell(0,1).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for cell_index in [0, 1]:
+        cell_format = target_table.cell(0, cell_index).paragraphs[0].paragraph_format
+        cell_format.space_before = cell_format.space_after = 0
+        cell_format.line_spacing = CONTENTLINESPACE
+        target_table.cell(0, cell_index).vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    for row in target_table.rows:
         row.height = Cm(0.1)
 
-def bullet_list_style(paragraph):
+def bullet_list_style(target_paragraph):
     """
-    Apply the bullet list style to a paragraph.
+    Apply the bullet list style to a target_paragraph.
     
     Args:
-        paragraph: The paragraph to apply the bullet list style to.
+        target_paragraph: The paragraph to apply the bullet list style to.
     """
-    paragraph_format = paragraph.paragraph_format
-    paragraph_format.space_before = 0
-    paragraph_format.space_after = 0
+    paragraph_format = target_paragraph.paragraph_format
+    paragraph_format.space_before = paragraph_format.space_after = 0
     paragraph_format.line_spacing = CONTENTLINESPACE
     paragraph_format.left_indent = Inches(0.5)
 
-def content_description_style(document, description):
+def content_description_style(target_document, description_text):
     """
     Apply the content description style to a paragraph.
     
     Args:
-        document: The document to apply the content description style to.
-        description: The description text.
+        target_document: The document to apply the content description style to.
+        description_text: The description text.
     """
-    description = document.add_paragraph(description, style="List Bullet")
-    bullet_list_style(description)
-        
+    description_paragraph = target_document.add_paragraph(description_text, style="List Bullet")
+    bullet_list_style(description_paragraph)
 
-def skill_style(table):
+def skill_style(target_table):
     """
-    Apply the skill style to a table.
+    Apply the skill style to a target_table.
     
     Args:
-        table: The table to apply the skill style to.
+        target_table: The table to apply the skill style to.
     """
-    table.autofit = False 
-    table.allow_autofit = False
-    for row in table.rows:
+    target_table.autofit = target_table.allow_autofit = False
+    for row in target_table.rows:
         row.height = Cm(0.1)
         row.cells[0].width = Cm(SKILLWIDTH)
         row.cells[1].width = 7052310 - SKILLWIDTH * 360000
+        for cell_index in [0, 1]:
+            cell_format = row.cells[cell_index].paragraphs[0].paragraph_format
+            cell_format.space_before = cell_format.space_after = 0
+            cell_format.line_spacing = CONTENTLINESPACE
 
-        col0_format = row.cells[0].paragraphs[0].paragraph_format
-        col1_format = row.cells[1].paragraphs[0].paragraph_format
-        col0_format.space_before = 0
-        col0_format.space_after = 0
-        col0_format.line_spacing = CONTENTLINESPACE
-        col1_format.space_before = 0
-        col1_format.space_after = 0
-        col1_format.line_spacing = CONTENTLINESPACE
-
-def skill_heading_style(paragraph):
+def skill_heading_style(target_paragraph):
     """
-    Apply the skill heading style to a paragraph.
+    Apply the skill heading style to a target_paragraph.
     
     Args:
-        paragraph: The paragraph to apply the skill heading style to.
+        target_paragraph: The paragraph to apply the skill heading style to.
     """
-    paragraph_format = paragraph.paragraph_format
-    paragraph_format.space_before = 0
-    paragraph_format.space_after = 0
+    paragraph_format = target_paragraph.paragraph_format
+    paragraph_format.space_before = paragraph_format.space_after = 0
     paragraph_format.line_spacing = CONTENTLINESPACE
-    paragraph.runs[0].bold = True
-    paragraph.runs[0].font.size = Pt(11)
+    target_paragraph.runs[0].bold = True
+    target_paragraph.runs[0].font.size = Pt(11)
     

@@ -61,23 +61,39 @@ def generate_cover_letter(data):
     Returns:
         str: response
     """
-    logger.debug("Generating Cover Letter for data: %s", data)
-    
-    user_info = data["profile"]
-    
-    wanted_job_info = {
-        "jobTitle": data["jobTitle"],
-        "companyName": data["companyName"]
-    }
-    
-    cover_letter_text, filename = generate_cover_letter_data(user_info, wanted_job_info)
-    
-    # access profile data from data["profile"]
-    response = {
-        "word": f"http://{config.server_ip}:3002/{filename}.docx",
-        "text": cover_letter_text
-    }
-    return json.dumps(response)
+    try:
+        logger.debug("Generating Cover Letter for data: %s", data)
+        
+        user_info = data["profile"]
+        
+        wanted_job_info = {
+            "jobTitle": data["jobTitle"],
+            "companyName": data["companyName"]
+        }
+        
+        cover_letter_text, filename = generate_cover_letter_data(user_info, wanted_job_info)
+        
+        # access profile data from data["profile"]
+        response = {
+            "word": f"http://{config.server_ip}:3002/{filename}.docx",
+            "text": cover_letter_text
+        }
+        return json.dumps(response)
+    except Exception as e:
+        logger.exception("Error while generating cover letter: %s", e)
+        return json.dumps({
+            "message": "Error while generating cover letter!",
+            "error": str(e),
+            "status": 500
+        })
 
 def get_file(filename):
-    return send_file(f"generated-coverletters/{filename}")
+    try:
+        return send_file(f"generated-coverletters/{filename}")
+    except Exception as e:
+        logger.exception("Error while getting file: %s", e)
+        return json.dumps({
+            "message": "Error while getting file!",
+            "error": str(e),
+            "status": 404
+        })

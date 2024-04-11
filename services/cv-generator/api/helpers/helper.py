@@ -2,6 +2,24 @@ from .docx_helpers import *
 from docx import Document
 from docx.shared import Pt, Cm, Mm
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from datetime import datetime
+
+def get_month_year(date):
+    """
+    Get the month and year from a date (Jan 2022).
+    
+    Args:
+        date: The date to get the month and year from.
+    Returns:
+        str: The month and year.
+    """
+    # if it is str with val = Present or No expiry date, return it as is
+    if date == "Present" or date == "No expiry date":
+        return date
+    
+    # converts from this format: "2022-01-31T22:00:00.000Z" to this format: "Jan 2022"
+    date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+    return date.strftime("%b %Y")
 
 def heading(document, heading_content):
     """
@@ -11,37 +29,29 @@ def heading(document, heading_content):
         document: The document to add the heading to.
         heading_content: The content of the heading.
     """
-    # first Line
-    name = document.add_paragraph(heading_content["fullname"])
+    name = document.add_paragraph(heading_content["fullName"])
     name_format = name.paragraph_format
     name_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    name_format.space_before = 0
-    name_format.space_after = Cm(0.2)
+    name_format.space_before = name_format.space_after = 0
     name_format.line_spacing = 1
     name.runs[0].bold = True
     name.runs[0].font.size = Pt(26)
     
-    # second Line
     second_line = document.add_paragraph("Phone: ")
     second_line.add_run(heading_content["phoneNumber"])
     second_line.add_run(" Email: ")
-    # add dummy run, because indecies are used in heading_style
     second_line.add_run("")
     add_hyperlink(second_line, heading_content["email"], "mailto:" + heading_content["email"])
     heading_style(second_line)
 
-    # third Line
     third_line = document.add_paragraph("Github: ")
-    # add dummy run, because indecies are used in heading_style
     third_line.add_run("")
     add_hyperlink(third_line, heading_content["gitHub"], heading_content["gitHub"])
     third_line.add_run(" LinkedIn: ")
-    # add dummy run, because indecies are used in heading_style
     third_line.add_run("")
     add_hyperlink(third_line, heading_content["linkedIn"], heading_content["linkedIn"])
     heading_style(third_line)
     
-    # fourth Line
     fourth_line = document.add_paragraph("City: ")
     fourth_line.add_run(heading_content["city"])
     fourth_line.add_run(" Country: ")
@@ -59,8 +69,7 @@ def objective(document, objective_content):
     heading = document.add_paragraph("OBJECTIVE")
     objective = document.add_paragraph(objective_content["summary"] + "\n")
     objective_format = objective.paragraph_format
-    objective_format.space_before = 0
-    objective_format.space_after = 0
+    objective_format.space_before = objective_format.space_after = 0
     objective_format.line_spacing = CONTENTLINESPACE
     objective.runs[0].bold = False
     objective.runs[0].font.size = Pt(11)
@@ -74,24 +83,21 @@ def education(document, education_content):
         document: The document to add the education to.
         education_content: The content of the education.
     """
-    # subheading
     heading = document.add_paragraph("EDUCATION")
     sub_heading_style(heading)
-    # add content
     for component in education_content:
+        start_date = get_month_year(component["startDate"])
+        end_date = get_month_year(component.get("endDate", "Present"))
+        
         education = document.add_paragraph(component["schoolName"])
         table = document.add_table(rows=1, cols=2)
         heading_cells = table.rows[0].cells
         heading_cells[0].text = component["degree"]
-        if component["startDate"] and component["endDate"]:
-            heading_cells[1].text = component["startDate"] + " - " + component["endDate"]
-        else:
-            heading_cells[1].text = ""
+        heading_cells[1].text = start_date + " - " + end_date if start_date and end_date else ""
         table_style(table)
 
         content_description_style(document, component["description"])
         content_heading_style(education)
-        
         document.add_paragraph("")
         
 def experience(document, experience_content):
@@ -108,12 +114,15 @@ def experience(document, experience_content):
 
     # add content
     for component in experience_content:
+        start_date = get_month_year(component["startDate"])
+        end_date = get_month_year(component.get("endDate", "Present"))
+        
         experience = document.add_paragraph(component["jobTitle"])
         table = document.add_table(rows=1, cols=2)
         heading_cells = table.rows[0].cells
         heading_cells[0].text = component["companyName"]
-        if component["startDate"] and component["endDate"]:
-            heading_cells[1].text = component["startDate"] + " - " + component["endDate"]
+        if start_date and end_date:
+            heading_cells[1].text = start_date + " - " + end_date
         else:
             heading_cells[1].text = ""
         table_style(table)
@@ -130,27 +139,23 @@ def projects(document, projects_content):
         document: The document to add the projects to.
         projects_content: The content of the projects.
     """
-    projects = document.add_paragraph("PROJECTS")
-    sub_heading_style(projects)
-    # add content
-    for component in projects_content:
-        table = document.add_table(rows=1, cols=2)
-        heading_cells = table.rows[0].cells
-        heading_cells[0].text = component["name"]
-        content_heading_style(heading_cells[0].paragraphs[0])
-        table_style(table)
-        content_description_style(document, component["description"])
+    projects_heading = document.add_paragraph("PROJECTS")
+    sub_heading_style(projects_heading)
+    for project in projects_content:
+        project_table = document.add_table(rows=1, cols=2)
+        project_cells = project_table.rows[0].cells
+        project_cells[0].text = project["name"]
+        content_heading_style(project_cells[0].paragraphs[0])
+        table_style(project_table)
+        content_description_style(document, project["description"])
         
-        # add content
-        table = document.add_table(rows=0, cols=2)
-        table.add_row()
-        heading_cells = table.rows[-1].cells
-        heading_cells[0].text = "Technologies"
-        heading_cells[1].text = component["skills"]
-        skill_heading_style(heading_cells[0].paragraphs[0])
-
-        skill_style(table)
-        
+        technologies_table = document.add_table(rows=0, cols=2)
+        technologies_table.add_row()
+        technologies_cells = technologies_table.rows[-1].cells
+        technologies_cells[0].text = "Technologies"
+        technologies_cells[1].text = project["skills"]
+        skill_heading_style(technologies_cells[0].paragraphs[0])
+        skill_style(technologies_table)
         document.add_paragraph("")
 
 def skills(document, skills_content):
@@ -161,21 +166,16 @@ def skills(document, skills_content):
         document: The document to add the skills to.
         skills_content: The content of the skills.
     """
-    # subheading
-    skills = document.add_paragraph("SKILLS")
-    sub_heading_style(skills)
-
-    # add content
-    table = document.add_table(rows=0, cols=2)
+    skills_heading = document.add_paragraph("SKILLS")
+    sub_heading_style(skills_heading)
+    skills_table = document.add_table(rows=0, cols=2)
     for skill in skills_content:
-        table.add_row()
-        heading_cells = table.rows[-1].cells
-        heading_cells[0].text = skill["category"]
-        heading_cells[1].text = skill["list"]
-        skill_heading_style(heading_cells[0].paragraphs[0])
-
-    skill_style(table)
-    
+        skills_table.add_row()
+        skill_cells = skills_table.rows[-1].cells
+        skill_cells[0].text = skill["category"]
+        skill_cells[1].text = skill["list"]
+        skill_heading_style(skill_cells[0].paragraphs[0])
+    skill_style(skills_table)
     document.add_paragraph("")
     
 def certificates(document, certificates_content):
@@ -186,23 +186,21 @@ def certificates(document, certificates_content):
         document: The document to add the certificates to.
         certificates_content: The content of the certificates.
     """
-    # subheading
-    certificates = document.add_paragraph("CERTIFICATES")
-    sub_heading_style(certificates)
-
-    # add content
-    for component in certificates_content:
-        certificates = document.add_paragraph(component["title"])
-        table = document.add_table(rows=1, cols=2)
-        heading_cells = table.rows[0].cells
-        heading_cells[0].text = component["authority"]
-        heading_cells[1].text = "Issued at: " + component["issuedAt"] + " Valid until: " + component["validUntil"]
+    certificates_heading = document.add_paragraph("CERTIFICATES")
+    sub_heading_style(certificates_heading)
+    for certificate in certificates_content:
+        issued_at = get_month_year(certificate["issuedAt"])
+        valid_until = get_month_year(certificate.get("validUntil", "No expiry date"))
         
-        table_style(table)
-        content_heading_style(certificates)
+        certificate_paragraph = document.add_paragraph(certificate["title"])
+        certificate_table = document.add_table(rows=1, cols=2)
+        certificate_cells = certificate_table.rows[0].cells
+        certificate_cells[0].text = certificate["authority"]
+        certificate_cells[1].text = "Issued at: " + issued_at + " Valid until: " + valid_until
+        table_style(certificate_table)
+        content_heading_style(certificate_paragraph)
         
-        description = document.add_paragraph("", style="List Bullet")
-        add_hyperlink(description, component["url"], component["url"])
-        bullet_list_style(description)
-        
+        certificate_url = document.add_paragraph("", style="List Bullet")
+        add_hyperlink(certificate_url, certificate["url"], certificate["url"])
+        bullet_list_style(certificate_url)
         document.add_paragraph("")
