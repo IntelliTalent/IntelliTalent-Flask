@@ -2,6 +2,7 @@ from .helpers.docx_helpers import *
 from .helpers.helper import *
 from .logger import logger
 from instance import config
+from flask.helpers import send_file
 from datetime import datetime
 import json
 
@@ -139,7 +140,13 @@ def generate_CV(data):
 
     document.save(filename)
     
+    # remove api word from the filename, because when routing to the file, it will be added automatically
+    filename = filename.replace("api/", "")
+    
     response = {
         "word": f"http://{config.server_ip}:3008/{filename}"
     }
     return json.dumps(response)
+
+def get_file(filename):
+    return send_file(f"generated-cvs/{filename}")

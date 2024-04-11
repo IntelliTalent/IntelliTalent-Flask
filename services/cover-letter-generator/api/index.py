@@ -1,8 +1,4 @@
-from flask import request, jsonify, current_app as app
 import simplejson as json
-from .shared.helpers import (
-    make_response_json,
-)
 from flask.helpers import send_file
 from instance import config
 from .helpers.helper import generate_cover_letter_data
@@ -84,4 +80,4 @@ def generate_cover_letter(data):
     return json.dumps(response)
 
 def get_file(filename):
-    return send_file(f"generated/{filename}")
+    return send_file(f"generated-coverletters/{filename}")

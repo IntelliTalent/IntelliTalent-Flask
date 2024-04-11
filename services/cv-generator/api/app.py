@@ -46,6 +46,7 @@ rabbitmq_thread.start()
 from .index import (
     health_check,
     generate_CV,
+    get_file
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
@@ -62,3 +63,6 @@ app.route("/healthCheck", methods=["GET"])(health_check)
 
 # for testing, replica of generateCV pattern
 app.route("/generateCV", methods=["POST"])(generate_CV_endpoint)
+
+# route files
+app.route("/generated-cvs/<filename>", methods=["GET"])(get_file)
