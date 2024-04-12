@@ -1,19 +1,18 @@
 from flask import (
     Flask,
+    request
 )
 from .shared.rabbitmq import (
     listen_to_queue,
 )
+from .shared.helpers import (
+    make_response_json
+)
 from instance import config
 from .logger import logger
-import os, threading
+import os, threading, json
 
 def handle_command(command, data):
-    """ TODO:
-        Define command/s to handle this functionalities:
-           - Receive an unstructured job from Jobs service, extract structured job from it, and return it back.
-    """
-    
     if command == "healthCheck":
         return health_check()
     
@@ -48,3 +47,10 @@ from .index import (
 
 # for testing, replica of healthCheck pattern
 app.route("/healthCheck", methods=["GET"])(health_check)
+
+def convert_unstructured_jobs_endpoint():
+    body = request.get_json()
+
+    return make_response_json(get_job_info(body))
+
+app.route("/convert", methods=["POST"])(convert_unstructured_jobs_endpoint)
