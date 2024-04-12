@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I am eager to contribute to $applying_company as a $position."
+    ],
+    "experience": [
+        "My expertise includes app architecture, debugging, and successful project leadership."
+    ],
+    "skills": [
+        "As a seasoned professional with $total_exp_years years of mobile app development experience, Specializing in $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "Thank you for considering my application."
+    ]
+}

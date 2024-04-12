@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm excited about the $position role at $applying_company."
+    ],
+    "experience": [
+        "With $total_exp_years years of experience and strong technical skills, I can efficiently analyze data, maintain software, and solve IT issues. I'm confident in surpassing expectations with my technical abilities."
+    ],
+    "skills": [
+        "I'm adept at working with diverse software applications, ensuring smooth integration into user-friendly solutions aligned with your brand."
+    ],
+    "closing": [
+        "Thank you for considering my application. I look forward to discussing my contributions in a call or meeting."
+    ]
+}

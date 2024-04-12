@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "As a technologist with skills in a variety of software and programming languages, I am well-suited for the $position role at $applying_company."
+    ],
+    "experience": [
+        "With over $total_exp_years years of experience, I have designed, developed, and launched responsive websites and e-commerce solutions."
+    ],
+    "skills": [
+        "Also designed and developed front-end for numerous webpages using $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "I would welcome the opportunity to discuss how my skills can benefit $applying_company further. Thank you for considering my candidacy; I hope to hear from you soon to schedule an interview."
+    ]
+}

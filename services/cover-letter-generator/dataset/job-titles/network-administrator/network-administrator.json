@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm excited to apply for the $position role at $applying_company, learning about $applying_company's focus on innovation and teamwork convinced me that I'm the right fit."
+    ],
+    "experience": [
+        "With $total_exp_years years of experience, I'm seeking more autonomy in managing network infrastructure."
+    ],
+    "skills": [
+        "Specializing in $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "Thanks for your time and consideration."
+    ]
+}

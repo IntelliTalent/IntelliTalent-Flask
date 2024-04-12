@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I am excited to apply for the $position role at $applying_company."
+    ],
+    "experience": [
+        "My background in Software Development has prepared me well for this role."
+    ],
+    "skills": [
+        "I have a deep understanding of $skill, $skill, and $skill, and I have used these technologies to develop robust and efficient solutions."
+    ],
+    "closing": [
+        "I am eager to contribute my skills and expertise to $applying_company and help drive your success."
+    ]
+}

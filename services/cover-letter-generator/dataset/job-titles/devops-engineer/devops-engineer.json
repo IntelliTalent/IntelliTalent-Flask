@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm interested in the $position position at $applying_company. With over $total_exp_years years in software development, I offer valuable skills to enhance your team."
+    ],
+    "experience": [
+        "As a $worked_position at $worked_company, I streamlined processes. Excited to bring my skills and leadership to $applying_company for similar success."
+    ],
+    "skills": [
+        "I developed expertise in $skill, security, and organization. I contributed to real-time projects."
+    ],
+    "closing": [
+        "Thank you for considering my application. I look forward to discussing this opportunity further. Feel free to reach me by phone or email."
+    ]
+}
