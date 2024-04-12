@@ -20,6 +20,8 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
+RUN python -m nltk.downloader punkt
+
 ARG APP
 
 ENV APP=${APP}
