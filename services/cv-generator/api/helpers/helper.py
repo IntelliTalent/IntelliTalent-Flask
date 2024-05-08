@@ -17,8 +17,7 @@ def get_month_year(date):
     if date == "Present" or date == "No expiry date":
         return date
     
-    # converts from this format: "2022-01-31T22:00:00.000Z" to this format: "Jan 2022"
-    date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+    date = datetime.fromisoformat(date)
     return date.strftime("%b %Y")
 
 def heading(document, heading_content):

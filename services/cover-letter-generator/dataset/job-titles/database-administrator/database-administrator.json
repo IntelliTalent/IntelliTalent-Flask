@@ -8,7 +8,7 @@
     "experience": [
         "I have over $company_exp_years years of experience in database administration, and I am proficient in $skill and $skill.",
         "With over $company_exp_years years of experience in database administration, I have developed a comprehensive understanding of database systems.",
-        "I am currently employed at $worked_company where I manage the company's database systems.",
+        "I was employed at $worked_company where I manage the company's database systems.",
         "I have a strong technical background, with a particular focus on database structures, data modeling, and complex queries."
     ],
     "skills": [

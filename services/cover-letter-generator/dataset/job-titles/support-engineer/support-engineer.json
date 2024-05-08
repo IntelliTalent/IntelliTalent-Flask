@@ -6,7 +6,6 @@
     ],
     "experience": [
         "I have $total_exp_years years of experience in IT support, including $company_exp_years years as a $worked_position.",
-        "I have $total_exp_years years of experience in IT support, including $company_exp_years years as a $worked_position.",
         "I have over $total_exp_years years of experience in IT Support, with a focus on network administration, and customer service."
     ],
     "skills": [

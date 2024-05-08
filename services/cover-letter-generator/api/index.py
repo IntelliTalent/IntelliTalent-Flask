@@ -1,7 +1,10 @@
 import simplejson as json
 from flask.helpers import send_file
 from instance import config
-from .helpers.helper import generate_cover_letter_data
+from .helpers.helper import (
+    generate_cover_letter_data,
+    preprocess_user_info
+)
 from .logger import logger
 
 '''def main():
@@ -70,6 +73,10 @@ def generate_cover_letter(data):
             "jobTitle": data["jobTitle"],
             "companyName": data["companyName"]
         }
+        
+        preprocess_user_info(user_info)
+        
+        logger.debug("User Info: %s", user_info)
         
         cover_letter_text, filename = generate_cover_letter_data(user_info, wanted_job_info)
         

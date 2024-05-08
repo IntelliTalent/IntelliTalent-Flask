@@ -7,7 +7,8 @@ from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
-embedding = spacy.load("en_core_web_lg")
+# TODO: change to lg
+embedding = spacy.load("en_core_web_sm")
     
 def get_available_titles_vectors():
     """
@@ -254,8 +255,6 @@ def calculate_similarity_with_available_titles(wanted_job_title):
     
     wanted_title_vector = embedding(wanted_job_title).vector
     
-    logger.debug("wanted_title_vector: %s", wanted_title_vector)
-    
     similarities = []
     for vector in available_titles_embeddings:
         similarities.append(calculate_similarity(wanted_title_vector, vector))
@@ -443,3 +442,28 @@ def generate_cover_letter_data(user_info, wanted_job_info):
     filename = filename.replace("api/", "")
     
     return filled_cover_letter, filename
+
+def preprocess_user_info(user_info):
+    """
+    Preprocess user info
+    
+    Args:
+        user_info (dict): User info
+    Returns:
+        dict: Preprocessed user info
+    """
+    # for experiences, transform startDate and endDate to companyExperienceYears
+    for experience in user_info["experiences"]:
+        start_date = datetime.fromisoformat(experience["startDate"])
+        
+        if not experience.get("endDate"):
+            end_date = datetime.now()
+        else:
+            end_date = datetime.fromisoformat(experience["endDate"])
+            
+        # calculate company experience years, using ceil
+        experience["companyExperienceYears"] = (end_date - start_date).days // 365 + 1
+        
+    # sort by startDate, descendingly
+    user_info["experiences"] = sorted(user_info["experiences"], key=lambda x: x["startDate"], reverse=True)
+        
