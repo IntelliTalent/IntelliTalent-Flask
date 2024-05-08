@@ -18,7 +18,12 @@ RUN apk add python3-dev build-base gcc
 
 RUN pip install --upgrade pip
 
+RUN apk add build-base
+
 RUN pip install -r requirements.txt
+
+# TODO: change to lg
+RUN python -m spacy download en_core_web_sm
 
 RUN python -m nltk.downloader punkt
 
