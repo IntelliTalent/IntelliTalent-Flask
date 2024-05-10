@@ -1,8 +1,10 @@
 from .docx_helpers import *
-from docx import Document
-from docx.shared import Pt, Cm, Mm
+from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from datetime import datetime
+from instance import config
+from ..logger import logger
+import requests
 
 def get_month_year(date):
     """
@@ -203,3 +205,36 @@ def certificates(document, certificates_content):
         add_hyperlink(certificate_url, certificate["url"], certificate["url"])
         bullet_list_style(certificate_url)
         document.add_paragraph("")
+        
+def upload_file(file_path):
+    """
+    Uploads the file to the uploader service
+    
+    Args:
+        file_path (str): File path
+    Returns:
+        str: The uploaded file link
+    """
+    url = f"http://{config.SERVER_HOST}:3000/api/v1/uploader/upload"
+    
+    filename = file_path.split('/')[-1]
+
+    payload = {}
+    files=[
+        (
+            'file',
+            (
+                filename,
+                open(file_path,'rb')
+            )
+        )
+    ]
+    
+    headers = {}
+
+    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+    logger.debug("upload response = %s" % response.text)
+    
+    return response.json()["link"]
+ 

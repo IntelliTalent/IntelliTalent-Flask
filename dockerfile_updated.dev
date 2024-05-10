@@ -4,11 +4,11 @@ WORKDIR /usr/src/app/
 
 RUN apk add --no-cache gcc musl-dev libffi-dev bash git
 
-COPY ./requirements.txt requirements.txt
+COPY ./requirements_updated.txt requirements_updated.txt
 
-COPY ./prepareAndStartDev.bash /tmp/prepareAndStartDev.bash
+COPY ./prepareAndStartDevUpdated.bash /tmp/prepareAndStartDevUpdated.bash
 
-RUN chmod +x /tmp/prepareAndStartDev.bash
+RUN chmod +x /tmp/prepareAndStartDevUpdated.bash
 
 RUN python -m venv venv
 
@@ -20,7 +20,7 @@ RUN pip install --upgrade pip
 
 RUN apk add build-base
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements_updated.txt
 
 # TODO: change to lg
 RUN python -m spacy download en_core_web_sm
@@ -41,6 +41,6 @@ RUN chmod +x ./stop.bash
 
 RUN cp -r venv /tmp/venv
 
-RUN cp requirements.txt /tmp/requirements.txt
+RUN cp requirements_updated.txt /tmp/requirements_updated.txt
 
-CMD ["bash", "/tmp/prepareAndStartDev.bash"]
+CMD ["bash", "/tmp/prepareAndStartDevUpdated.bash"]

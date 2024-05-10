@@ -1,4 +1,4 @@
 import logging, os
 LOG_LEVEL = logging.DEBUG
 
-server_ip = os.getenv('SERVER_IP')
+SERVER_HOST = os.getenv('SERVER_HOST')

@@ -1,9 +1,8 @@
 import simplejson as json
-from flask.helpers import send_file
-from instance import config
 from .helpers.helper import (
     generate_cover_letter_data,
-    preprocess_user_info
+    preprocess_user_info,
+    upload_file,
 )
 from .logger import logger
     
@@ -39,9 +38,10 @@ def generate_cover_letter(data):
         
         cover_letter_text, filename = generate_cover_letter_data(user_info, wanted_job_info)
         
-        # access profile data from data["profile"]
+        word_link = upload_file(filename)
+        
         response = {
-            "word": f"http://{config.server_ip}:3002/{filename}.docx",
+            "word": word_link,
             "text": cover_letter_text
         }
         return json.dumps(response)
@@ -51,15 +51,4 @@ def generate_cover_letter(data):
             "message": "Error while generating cover letter!",
             "error": str(e),
             "status": 500
-        })
-
-def get_file(filename):
-    try:
-        return send_file(f"generated-coverletters/{filename}")
-    except Exception as e:
-        logger.exception("Error while getting file: %s", e)
-        return json.dumps({
-            "message": "Error while getting file!",
-            "error": str(e),
-            "status": 404
         })

@@ -1,6 +1,6 @@
 from instance import config
 from ..logger import logger
-import re, os, json, random, spacy
+import re, os, json, random, spacy, requests
 from datetime import datetime
 import numpy as np
 from docx import Document
@@ -438,9 +438,6 @@ def generate_cover_letter_data(user_info, wanted_job_info):
     # print to docx
     write_to_word(filled_cover_letter, filename)
     
-    # remove api word from the filename, because when routing to the file, it will be added automatically
-    filename = filename.replace("api/", "")
-    
     return filled_cover_letter, filename
 
 def preprocess_user_info(user_info):
@@ -466,4 +463,36 @@ def preprocess_user_info(user_info):
         
     # sort by startDate, descendingly
     user_info["experiences"] = sorted(user_info["experiences"], key=lambda x: x["startDate"], reverse=True)
-        
+    
+def upload_file(file_path):
+    """
+    Uploads the file to the uploader service
+    
+    Args:
+        file_path (str): File path
+    Returns:
+        str: The uploaded file link
+    """
+    url = f"http://{config.SERVER_HOST}:3000/api/v1/uploader/upload"
+    
+    filename = file_path.split('/')[-1]
+
+    payload = {}
+    files=[
+        (
+            'file',
+            (
+                filename,
+                open(file_path,'rb')
+            )
+        )
+    ]
+    
+    headers = {}
+
+    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+    logger.debug("upload response = %s" % response.text)
+    
+    return response.json()["link"]
+ 

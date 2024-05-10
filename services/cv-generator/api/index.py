@@ -1,9 +1,20 @@
 from .helpers.docx_helpers import *
-from .helpers.helper import *
+from .helpers.helper import (
+    heading,
+    objective,
+    education,
+    experience,
+    projects,
+    skills,
+    certificates,
+    upload_file,
+)
 from .logger import logger
-from instance import config
 from flask.helpers import send_file
 from datetime import datetime
+from docx import Document
+from docx.shared import Pt, Cm, Mm
+
 import json
 
 def health_check():
@@ -134,11 +145,10 @@ def generate_CV(data):
 
         document.save(filename)
         
-        # remove api word from the filename, because when routing to the file, it will be added automatically
-        filename = filename.replace("api/", "")
+        word_link = upload_file(filename)
         
         response = {
-            "word": f"http://{config.server_ip}:3008/{filename}"
+            "word": word_link,
         }
         return json.dumps(response)
     except Exception as e:
