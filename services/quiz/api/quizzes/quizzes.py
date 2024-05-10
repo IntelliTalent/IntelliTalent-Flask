@@ -5,7 +5,7 @@ from ..app import db_name
 database = app.mongo[db_name]
 
 quizzes_schema = {
-    'profileId': {'type': 'string', 'required': True},
+    'userId': {'type': 'string', 'required': True},
     'jobId': {'type': 'string', 'required': True},
     'randomSlug': {'type': 'string', 'required': True},
     'questions': {'type': 'array', 'items': 'dict', 'required': True},
