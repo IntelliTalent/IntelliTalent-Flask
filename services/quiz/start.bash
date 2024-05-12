@@ -4,7 +4,7 @@ source venv/bin/activate
 
 echo "Starting Quiz App"
 
-mldir logs
+mkdir logs
 
 gunicorn quiz_app_wsgi:app \
 	-p ./pid \

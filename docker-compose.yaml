@@ -1,6 +1,5 @@
 version: "3"
 services:
-
   scrapper:
     container_name: scrapper
     build:

@@ -1,9 +1,5 @@
 import random
 from flask import request, jsonify, current_app as app
-"""from .profile.profile_service import (
-    create_profile,
-    get_all_profiles
-)"""
 from .shared.helpers import (
     make_response_json,
 )
@@ -25,10 +21,6 @@ for question in quiz_dataset:
         quiz_data_by_context[context] = []
     quiz_data_by_context[context].append(question)
 
-
-# print the each context and the number of questions in it
-# for context, questions in quiz_data_by_context.items():
-#     logger.debug(f"Context: {context} - Number of questions: {len(questions)}")
 
 
 
