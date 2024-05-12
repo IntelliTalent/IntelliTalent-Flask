@@ -4,6 +4,8 @@ source venv/bin/activate
 
 echo "Starting Quiz App"
 
+mkdir logs
+
 gunicorn quiz_app_wsgi:app \
 	-p ./pid \
 	-k eventlet \

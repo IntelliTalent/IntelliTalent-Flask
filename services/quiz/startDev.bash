@@ -4,6 +4,8 @@ source venv/bin/activate
 
 echo "Starting Quiz App"
 
+mkdir logs
+
 gunicorn quiz_app_wsgi:app \
 	-p ./pid \
 	-k eventlet \
@@ -18,7 +20,7 @@ gunicorn quiz_app_wsgi:app \
 	--reload
 sleep 1
 if [ -f pid ]; then
-    echo "	started master worker pid:$(cat pid)"
+	echo "	started master worker pid:$(cat pid)"
 else
 	echo "	failed starting master worker"
 fi
