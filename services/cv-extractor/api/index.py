@@ -20,14 +20,14 @@ def get_cv_info(data):
     logger.debug("Get CV Info for data: %s", data)
     
     # Download the cv from the server and save it to a file
-    host = os.getenv('SERVER_HOST')
-    response = requests.get(f"http://{host}:3000/api/v1/cv/{data['fileId']}")
+    response = requests.get(data['cvLink'])
     with open("cv.pdf", "wb") as f:
         f.write(response.content)
-    
-    
+
+    # Extract the info from the cv
     info_extracted = extract_info()
     
+    # Remove the cv file
     os.remove("cv.pdf")
     
     response = {
