@@ -8,7 +8,7 @@ from instance import config
 from .logger import logger
 import os, threading
 
-def handle_command(command):
+def handle_command(command,data):
     """ TODO:
         Define command/s to handle this functionalities:
            - Should handle an event to extract structured job details and its context (important for Quiz service) from a prompt and return it back. 
@@ -18,7 +18,7 @@ def handle_command(command):
     if command == "healthCheck":
         return health_check()
     elif command == "createCustomJob":
-        return create_custom_job()
+        return create_custom_job(data)
     
     else:
         return {"error": "Unknown command"}
@@ -41,6 +41,7 @@ rabbitmq_thread.start()
 
 from .index import (
     health_check,
+    create_custom_job
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
