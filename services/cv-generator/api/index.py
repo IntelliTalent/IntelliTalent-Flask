@@ -10,7 +10,6 @@ from .helpers.helper import (
     upload_file,
 )
 from .logger import logger
-from flask.helpers import send_file
 from datetime import datetime
 from docx import Document
 from docx.shared import Pt, Cm, Mm
@@ -157,15 +156,4 @@ def generate_CV(data):
             "message": "Error while generating CV!",
             "error": str(e),
             "status": 500
-        })
-
-def get_file(filename):
-    try:
-        return send_file(f"generated-cvs/{filename}")
-    except Exception as e:
-        logger.exception("Error while getting file: %s", e)
-        return json.dumps({
-            "message": "Error while getting file!",
-            "error": str(e),
-            "status": 404
         })
