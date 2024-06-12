@@ -14,13 +14,14 @@ def handle_command(command,data):
            - Should handle an event to extract structured job details and its context (important for Quiz service) from a prompt and return it back. 
            - The user then will see the structured job and edit it, including custom filters, enable quiz generation, and interview quetions, in case of interview, the user will enter a list of questions, then this service will call Jobs service to insert the structured job into DB. 
     """
+
     
     if command == "healthCheck":
         return health_check()
     elif command == "createCustomJob":
         return create_custom_job(data)
     
-    else:
+    else:   
         return {"error": "Unknown command"}
 
 rabbitmq_user = os.getenv('RABBITMQ_USER')

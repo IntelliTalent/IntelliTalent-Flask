@@ -1,4 +1,4 @@
-from flask import request, jsonify, current_app as app
+from flask import request, current_app as app
 from .shared.helpers import (
     make_response_json,
 )
@@ -13,6 +13,11 @@ def health_check():
 def create_custom_job(data):
     logger.debug("Create custom job")
     prompt = data['jobPrompt']
-    job:dict = model.getStructuredJobDetails(prompt)
-    # TODO: validation required for the job attributes and values
-    return make_response_json(json.dumps(job))
+    job = model.getStructuredJobDetails(prompt)
+    return json.dumps(
+        {
+            'job': job,
+            'Content-Type': 'application/json; charset=utf-8',  # Fixed dictionary entry
+            'status_code': 200
+        }
+    )

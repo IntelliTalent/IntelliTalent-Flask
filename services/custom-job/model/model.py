@@ -1,5 +1,5 @@
 import pickle
-with open('model.pkl','rb') as f:
+with open('/usr/src/app/model/model.pkl','rb') as f:
     crf = pickle.load(f)
 
 # Extract features function
