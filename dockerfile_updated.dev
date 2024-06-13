@@ -4,7 +4,7 @@ WORKDIR /usr/src/app/
 
 RUN apk add --no-cache gcc musl-dev libffi-dev bash git
 
-COPY ./requirements_updated.txt requirements_updated.txt
+COPY ./requirements.txt requirements.txt
 
 COPY ./prepareAndStartDevUpdated.bash /tmp/prepareAndStartDevUpdated.bash
 
@@ -20,7 +20,9 @@ RUN pip install --upgrade pip
 
 RUN apk add build-base
 
-RUN pip install -r requirements_updated.txt
+RUN apk add entr
+
+RUN pip install -r requirements.txt
 
 # TODO: change to lg
 RUN python -m spacy download en_core_web_sm
@@ -41,6 +43,6 @@ RUN chmod +x ./stop.bash
 
 RUN cp -r venv /tmp/venv
 
-RUN cp requirements_updated.txt /tmp/requirements_updated.txt
+RUN cp requirements.txt /tmp/requirements.txt
 
 CMD ["bash", "/tmp/prepareAndStartDevUpdated.bash"]
