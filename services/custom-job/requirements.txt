@@ -27,3 +27,4 @@ typing_extensions==4.9.0
 urllib3==1.26.18
 Werkzeug==2.3.6
 zipp==3.17.0
+sklearn-crfsuite==0.3.6
