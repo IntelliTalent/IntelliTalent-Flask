@@ -115,6 +115,7 @@ def fill_cover_letter(available_templates, user_info, wanted_job_info):
     Returns:
         str: The filled cover letter
     """
+    
     # validate user_info
     if len(user_info["skills"]) == 0:
         raise ValueError("User's skills list is empty")
@@ -145,7 +146,7 @@ Dear Hiring Manager,
     intro_template = available_templates["intro"][random_num]
     intro_template, skills_counter, global_skills_counter, experiences_counter = fill_template_sentence(intro_template, user_info, wanted_job_info, skills_counter, global_skills_counter, experiences_counter)
     sentences.append(intro_template)
-    
+        
     # Experience sentence (remove if len(user_info["experiences"]) == 0)
     experience_template = None
     if user_info.get("experiences") and len(user_info["experiences"]) > 0:
@@ -159,7 +160,7 @@ Dear Hiring Manager,
     skills_template = available_templates["skills"][random_num]
     skills_template, skills_counter, global_skills_counter, experiences_counter = fill_template_sentence(skills_template, user_info, wanted_job_info, skills_counter, global_skills_counter, experiences_counter)
     sentences.append(skills_template)
-    
+        
     # Closing sentence
     random_num = random.randint(0, len(available_templates["closing"]) - 1)
     closing_template = available_templates["closing"][random_num]
@@ -190,7 +191,7 @@ Dear Hiring Manager,
         
         # insert the skills sentence
         sentences.insert(skills_index, skills_template)
-             
+                     
     # Insert additional experience sentences if user has more than one previous job till 2
     if experience_template is not None:
         inserted_experience = False
@@ -222,7 +223,7 @@ Dear Hiring Manager,
     
     # End the cover letter
     cover_letter += "\nSincerely,\n" + user_info["fullName"] + "."
-    
+        
     return cover_letter
 
 def calculate_similarity(vec1, vec2):
@@ -316,8 +317,6 @@ def write_to_word(cover_letter, filename):
     Args:
         cover_letter (str): The cover letter
         filename (str): The filename
-    Returns:
-        Document: The Word document
     """
     # Split the text into lines
     lines = cover_letter.split("\n")
@@ -407,14 +406,6 @@ def generate_cover_letter_data(user_info, wanted_job_info):
     # shuffle all key values to get normal distribution of templates
     for key in available_templates:
         random.shuffle(available_templates[key])
-                
-    if len(available_templates["intro"]) == 0:
-        # default to software-engineer
-        title_dir = os.path.join(titles_dir, "software-engineer")
-        with open(os.path.join(title_dir, f"software-engineer.json"), "r") as f:
-            data = json.load(f)
-            for key in data:
-                available_templates[key].extend(data[key])
     
     additional_dir = os.path.join("dataset", "additional")
     with open(os.path.join(additional_dir, "additional_skills.json"), "r") as f:

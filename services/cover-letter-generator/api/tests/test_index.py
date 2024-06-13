@@ -2,19 +2,22 @@ import unittest, json
 from unittest.mock import patch
 from api.index import (
     health_check,
-    generate_CV,
+    generate_cover_letter,
 )
 
 class IndexTest(unittest.TestCase):
         
     def test_health_check(self):
-        self.assertEqual(health_check(), "Hello World From CV Generator Service!")
+        self.assertEqual(health_check(), "Hello World From Cover Letter Generator Service!")
         
     @patch('api.index.upload_file')
-    def test_generate_CV(self, upload_file_mock):
+    def test_generate_cover_letter(self, upload_file_mock):
         data = {
+            "jobTitle": "backend engineer",
+            "companyName": "XYZ",
             "profile": {
                 "fullName": "John Doe",
+                "address": "fasfas",
                 "phoneNumber": "1234567890",
                 "email": "john@example.com",
                 "gitHub": "https://github.com/johndoe",
@@ -22,6 +25,7 @@ class IndexTest(unittest.TestCase):
                 "city": "City",
                 "country": "Country",
                 "summary": "Seeking a challenging position in software development.",
+                "yearsOfExperience": 3,
                 "educations": [
                     {
                         "schoolName": "University of ABC",
@@ -36,8 +40,6 @@ class IndexTest(unittest.TestCase):
                         "jobTitle": "Software Engineer",
                         "companyName": "XYZ Corp",
                         "startDate": "2022-01-01",
-                        "endDate": "Present",
-                        "description": "Developing software applications."
                     }
                 ],
                 "projects": [
@@ -67,7 +69,7 @@ class IndexTest(unittest.TestCase):
         upload_file_mock.return_value = link
 
         # Calling the function
-        result = generate_CV(data)
+        result = generate_cover_letter(data)
         
         result = json.loads(result)
 
