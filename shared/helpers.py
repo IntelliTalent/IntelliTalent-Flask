@@ -1,5 +1,4 @@
 import simplejson
-from flask import jsonify
 def make_response_json(payload_obj, status_code=200, **kwargs):
     '''Return a JSON response by serializing `payload_obj`.
 

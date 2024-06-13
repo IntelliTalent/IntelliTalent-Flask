@@ -4,6 +4,16 @@ with open('/usr/src/app/model/model.pkl','rb') as f:
 
 # Extract features function
 def word2features(sent, i):
+    """
+    Extract features from a sentence for a given word index
+
+    Args:
+        sent (string): sentence to extract features from
+        i (num): index of the word to extract features for
+
+    Returns:
+        dict: dictionary of features for the given word
+    """
     word = sent[i]
     features = {
         'bias': 1.0,
@@ -37,9 +47,25 @@ def word2features(sent, i):
 
 
 def sent2features(sent):
+    """ extract features from a sentence for all words
+
+    Args:
+        sent (string): sentence to extract features from
+
+    Returns:
+        array[dict]: array of dictionaries of features for all words in the sentence
+    """
     return [word2features(sent, i) for i in range(len(sent))]
 
 def getStructuredJobDetails(prompt):
+    """return structured job details based on the job prompt using CRF model
+
+    Args:
+        prompt (string): prompt for the job
+
+    Returns:
+        dict: structured job details
+    """
     prompt = prompt.split()
     features = sent2features(prompt)
     output = crf.predict(X=[features])

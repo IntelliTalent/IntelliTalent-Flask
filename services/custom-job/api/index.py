@@ -11,13 +11,19 @@ def health_check():
     return "Hello World From Custom Job Service!"
 
 def create_custom_job(data):
+    """
+    return structured job details based on the job prompt using CRF model
+
+    Args:
+        data (string): prompt for the job
+    Returns:
+        serialized json : structured job details
+    """
     logger.debug("Create custom job")
     prompt = data['jobPrompt']
     job = model.getStructuredJobDetails(prompt)
     return json.dumps(
         {
             'job': job,
-            'Content-Type': 'application/json; charset=utf-8',  # Fixed dictionary entry
-            'status_code': 200
         }
     )

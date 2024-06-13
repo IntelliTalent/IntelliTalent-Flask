@@ -9,13 +9,6 @@ from .logger import logger
 import os, threading
 
 def handle_command(command,data):
-    """ TODO:
-        Define command/s to handle this functionalities:
-           - Should handle an event to extract structured job details and its context (important for Quiz service) from a prompt and return it back. 
-           - The user then will see the structured job and edit it, including custom filters, enable quiz generation, and interview quetions, in case of interview, the user will enter a list of questions, then this service will call Jobs service to insert the structured job into DB. 
-    """
-
-    
     if command == "healthCheck":
         return health_check()
     elif command == "createCustomJob":
