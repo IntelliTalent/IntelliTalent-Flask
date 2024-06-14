@@ -3,6 +3,7 @@ import numpy as np
 from unittest.mock import patch, MagicMock
 from docx import Document
 from api.helpers.helper import (
+    get_available_titles_vectors,
     fill_template_sentence,
     fill_experience_template,
     fill_cover_letter,
@@ -18,9 +19,28 @@ from api.helpers.helper import (
 
 
 class HelpersTest(unittest.TestCase):
+    def test_get_available_titles_vectors(self):
+        available_title_vectors = get_available_titles_vectors()
+        self.assertEqual(len(available_title_vectors), 27)
 
     def test_fill_template_sentence(self):
         sentence = "I worked at $worked_company as a $worked_position."
+        user_info = {
+            "experiences": [{"companyName": "ABC Corp", "jobTitle": "Software Engineer", "companyExperienceYears": 2}],
+            "skills": ["Python", "Java"],
+            "yearsOfExperience": 3
+        }
+        wanted_job_info = {"jobTitle": "Software Engineer", "companyName": "XYZ Inc"}
+        result, skills_counter, global_skills_counter, experiences_counter = fill_template_sentence(
+            sentence, user_info, wanted_job_info, 0, 0, 0
+        )
+        self.assertEqual(result, "I worked at ABC Corp as a Software Engineer.")
+        self.assertEqual(skills_counter, 0)
+        self.assertEqual(global_skills_counter, 0)
+        self.assertEqual(experiences_counter, 1)
+        
+    def test_fill_template_sentence_no_dot(self):
+        sentence = "I worked at $worked_company as a $worked_position"
         user_info = {
             "experiences": [{"companyName": "ABC Corp", "jobTitle": "Software Engineer", "companyExperienceYears": 2}],
             "skills": ["Python", "Java"],
@@ -65,6 +85,29 @@ class HelpersTest(unittest.TestCase):
         self.assertIn("I have worked at ABC Corp as a Software Engineer.", cover_letter)
         self.assertIn("My skills include Python and Java.", cover_letter)
         self.assertIn("Thank you for considering my application.", cover_letter)
+        
+    def test_fill_cover_letter_no_skills(self):
+        available_templates = {
+            "intro": ["I am applying for the $position at $applying_company."],
+            "experience": ["I have worked at $worked_company as a $worked_position."],
+            "skills": ["My skills include $skill and $skill."],
+            "closing": ["Thank you for considering my application."],
+            "additional_skills": ["I also know $skill."],
+            "additional_experiences": ["Previously, I worked at $worked_company as a $worked_position."]
+        }
+        user_info = {
+            "fullName": "John Doe",
+            "address": "123 Main St",
+            "phoneNumber": "1234567890",
+            "email": "john@example.com",
+            "experiences": [{"companyName": "ABC Corp", "jobTitle": "Software Engineer", "companyExperienceYears": 2}],
+            "yearsOfExperience": 3
+        }
+        wanted_job_info = {"jobTitle": "Software Engineer", "companyName": "XYZ Inc"}
+        
+        # It should raise ValueError
+        with self.assertRaises(ValueError):
+            fill_cover_letter(available_templates, user_info, wanted_job_info)
     
     def test_calculate_similarity(self):
         vec1 = np.array([1, 0])
@@ -139,10 +182,20 @@ class HelpersTest(unittest.TestCase):
             "yearsOfExperience": 2
         }
         wanted_job_info = {"jobTitle": "43248797@$#$", "companyName": "XYZ Inc"}
-        filled_cover_letter, filename = generate_cover_letter_data(user_info, {"jobTitle": "43248797@$#$", "companyName": "XYZ Inc"})
+        filled_cover_letter, filename = generate_cover_letter_data(user_info, wanted_job_info)
         
         self.assertIn("XYZ Inc", filled_cover_letter)
         self.assertTrue(filename.startswith('api/generated-coverletters/John-Doe-'))
+        
+    def test_generate_cover_letter_data_no_full_name(self):
+        user_info = {
+            
+        }
+        wanted_job_info = {"jobTitle": "43248797@$#$", "companyName": "XYZ Inc"}
+        returned = generate_cover_letter_data(user_info, wanted_job_info)
+        
+        # It should return None
+        self.assertIsNone(returned)
 
     def test_preprocess_user_info(self):
         user_info = {

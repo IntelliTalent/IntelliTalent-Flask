@@ -122,10 +122,7 @@ def experience(document, experience_content):
         table = document.add_table(rows=1, cols=2)
         heading_cells = table.rows[0].cells
         heading_cells[0].text = component["companyName"]
-        if start_date and end_date:
-            heading_cells[1].text = start_date + " - " + end_date
-        else:
-            heading_cells[1].text = ""
+        heading_cells[1].text = start_date + " - " + end_date
         table_style(table)
         content_heading_style(experience)
         content_description_style(document, component["description"])
@@ -219,22 +216,23 @@ def upload_file(file_path):
     
     filename = file_path.split('/')[-1]
 
-    payload = {}
-    files=[
-        (
-            'file',
+    with open(file_path, 'rb') as file:
+        payload = {}
+        files=[
             (
-                filename,
-                open(file_path,'rb')
+                'file',
+                (
+                    filename,
+                    file
+                )
             )
-        )
-    ]
-    
-    headers = {}
+        ]
+        
+        headers = {}
 
-    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+        response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
-    logger.debug("upload response = %s" % response.text)
-    
-    return response.json()["link"]
+        logger.debug("upload response = %s" % response.text)
+        
+        return response.json()["link"]
  

@@ -76,6 +76,46 @@ class IndexTest(unittest.TestCase):
         
         # Check if the returned link == the mocked link
         self.assertEqual(result["word"], link)
+        
+    @patch('api.index.upload_file')
+    def test_generate_CV_no_full_name(self, upload_file_mock):
+        data = {
+            "profile": {
+                
+            }
+        }
+        
+        link = "http://example.com/uploaded_file.docx"
+
+        # Mocking the upload_file function to return a dummy link
+        upload_file_mock.return_value = link
+
+        # It should return an error message
+        result = generate_CV(data)
+        
+        result = json.loads(result)
+        
+        self.assertEqual(result["status"], 500)
+        
+        self.assertEqual(result["message"], "Error while generating CV!")
+        
+    @patch('api.index.upload_file')
+    def test_generate_CV_no_profile(self, upload_file_mock):
+        data = {}
+        
+        link = "http://example.com/uploaded_file.docx"
+
+        # Mocking the upload_file function to return a dummy link
+        upload_file_mock.return_value = link
+
+        # It should return an error message
+        result = generate_CV(data)
+        
+        result = json.loads(result)
+        
+        self.assertEqual(result["status"], 500)
+        
+        self.assertEqual(result["message"], "Error while generating CV!")
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=2).run(unittest.TestLoader().loadTestsFromTestCase(IndexTest))

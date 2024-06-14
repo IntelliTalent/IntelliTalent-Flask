@@ -117,7 +117,7 @@ def fill_cover_letter(available_templates, user_info, wanted_job_info):
     """
     
     # validate user_info
-    if len(user_info["skills"]) == 0:
+    if not user_info.get("skills") or len(user_info["skills"]) == 0:
         raise ValueError("User's skills list is empty")
     
     # Initialize the cover letter
@@ -468,22 +468,23 @@ def upload_file(file_path):
     
     filename = file_path.split('/')[-1]
 
-    payload = {}
-    files=[
-        (
-            'file',
+    with open(file_path, 'rb') as file:
+        payload = {}
+        files=[
             (
-                filename,
-                open(file_path,'rb')
+                'file',
+                (
+                    filename,
+                    file
+                )
             )
-        )
-    ]
-    
-    headers = {}
+        ]
+        
+        headers = {}
 
-    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+        response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
-    logger.debug("upload response = %s" % response.text)
-    
-    return response.json()["link"]
+        logger.debug("upload response = %s" % response.text)
+        
+        return response.json()["link"]
  
