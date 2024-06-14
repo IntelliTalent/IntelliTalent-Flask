@@ -40,7 +40,6 @@ rabbitmq_thread.start()
 from .index import (
     health_check,
     generate_cover_letter,
-    get_file
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns
@@ -54,6 +53,3 @@ def generate_cover_letter_endpoint():
 
 # for testing, replica of generateCoverLetter pattern
 app.route("/generateCoverLetter", methods=["POST"])(generate_cover_letter_endpoint)
-
-# route files
-app.route("/generated-coverletters/<filename>", methods=["GET"])(get_file)
