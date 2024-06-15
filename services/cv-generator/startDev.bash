@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
 echo "Starting CV Generator App"
 
 gunicorn cv_generator_app_wsgi:app \

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
 echo "Starting CV Extractor App"
 
 gunicorn cv_extractor_app_wsgi:app \

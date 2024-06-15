@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
+echo "Starting Scrapper App"
+
 gunicorn scrapper_app_wsgi:app \
 	-p ./pid \
 	-k eventlet \

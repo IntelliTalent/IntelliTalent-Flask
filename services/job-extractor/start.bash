@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
 echo "Starting Job Extractor App"
 
 gunicorn job_extractor_app_wsgi:app \

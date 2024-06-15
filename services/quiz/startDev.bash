@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
 echo "Starting Quiz App"
 
 mkdir logs

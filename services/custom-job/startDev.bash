@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
 echo "Starting Custom Job App"
 
 gunicorn custom_job_app_wsgi:app \

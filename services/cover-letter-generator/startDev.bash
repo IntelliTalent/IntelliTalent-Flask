@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ -f pid ]; then
+    bash stop.bash
+fi
+
 echo "Starting Cover Letter Generator App"
 
 gunicorn cover_letter_generator_app_wsgi:app \
