@@ -5,7 +5,6 @@ from .shared.rabbitmq import (
     listen_to_queue,
 )
 from instance import config
-from flask_sqlalchemy import SQLAlchemy
 from .logger import logger
 from .shared.helpers import (
     make_response_json
@@ -13,11 +12,6 @@ from .shared.helpers import (
 import os, threading, json
 
 def handle_command(command, data):
-    """ TODO:
-        Define command/s to handle this functionalities:
-            - Should handle an event generates a CV given user profile. 
-    """
-    
     if command == "healthCheck":
         return health_check()
     
