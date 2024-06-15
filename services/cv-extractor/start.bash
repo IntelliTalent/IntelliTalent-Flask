@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
-
 echo "Starting CV Extractor App"
 
 gunicorn cv_extractor_app_wsgi:app \

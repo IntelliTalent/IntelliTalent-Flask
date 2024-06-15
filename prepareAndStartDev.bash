@@ -6,6 +6,8 @@
 
 cd /usr/src/app/
 
+mkdir -p logs
+
 bash startDev.bash
 
 while true; do sleep 1; done

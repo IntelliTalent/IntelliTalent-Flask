@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
-
 echo "Starting CV Generator App"
 
 gunicorn cv_generator_app_wsgi:app \

@@ -1,12 +1,6 @@
 import random
-from flask import request, jsonify, current_app as app
-from .shared.helpers import (
-    make_response_json,
-)
 from .logger import logger
 import json
-from flask import request, jsonify, current_app as app
-
 
 with open("./api/context_skills_mapping.json", "r") as f:
     context_skills_mapping = json.load(f)
@@ -20,8 +14,6 @@ for question in quiz_dataset:
     if context not in quiz_data_by_context:
         quiz_data_by_context[context] = []
     quiz_data_by_context[context].append(question)
-
-
 
 
 def get_top_matching_contexts(skills_array, number_of_context=10):

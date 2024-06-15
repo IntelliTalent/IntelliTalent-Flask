@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
-
 echo "Starting Job Extractor App"
 
 gunicorn job_extractor_app_wsgi:app \

@@ -4,7 +4,7 @@ services:
     container_name: scrapper
     build:
       context: .
-      dockerfile: ./dockerfile.dev
+      dockerfile: ./services/scrapper/dockerfile.dev
       args:
         - APP=scrapper
     image: clg:latest
@@ -42,7 +42,7 @@ services:
     container_name: job-extractor
     build:
       context: .
-      dockerfile: ./dockerfile.dev
+      dockerfile: ./services/job-extractor/dockerfile.dev
       args:
         - APP=job-extractor
     image: clg:latest
@@ -61,7 +61,7 @@ services:
     container_name: cv-extractor
     build:
       context: .
-      dockerfile: ./dockerfile.dev
+      dockerfile: ./services/cv-extractor/dockerfile.dev
       args:
         - APP=cv-extractor
     image: clg:latest
@@ -80,7 +80,7 @@ services:
     container_name: custom-job
     build:
       context: .
-      dockerfile: ./dockerfile.dev
+      dockerfile: ./services/custom-job/dockerfile.dev
       args:
         - APP=custom-job
     image: clg:latest
@@ -99,7 +99,7 @@ services:
     container_name: quiz
     build:
       context: .
-      dockerfile: ./dockerfile.dev
+      dockerfile: ./services/quiz/dockerfile.dev
       args:
         - APP=quiz
     image: clg:latest
@@ -113,25 +113,6 @@ services:
       - ./services/quiz/:/usr/src/app/
     ports:
       - "3006:5000"
-
-  interview:
-    container_name: interview
-    build:
-      context: .
-      dockerfile: ./dockerfile.dev
-      args:
-        - APP=interview
-    image: clg:latest
-    restart: unless-stopped
-    env_file:
-      - ../.env
-    networks:
-      - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/interview/:/usr/src/app/
-    ports:
-      - "3007:5000"
 
   cv-generator:
     container_name: cv-generator
@@ -150,7 +131,7 @@ services:
       - ./shared/:/usr/src/app/api/shared/
       - ./services/cv-generator/:/usr/src/app/
     ports:
-      - "3008:5000"
+      - "3007:5000"
 
 networks:
   intelli-network:

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
-
 echo "Starting Custom Job App"
 
 gunicorn custom_job_app_wsgi:app \

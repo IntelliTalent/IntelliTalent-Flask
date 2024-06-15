@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
-
 echo "Starting Scrapper App"
 
 gunicorn scrapper_app_wsgi:app \

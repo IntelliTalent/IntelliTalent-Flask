@@ -14,6 +14,8 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
+RUN python -m nltk.downloader punkt
+
 COPY ./services/${APP}/ .
 
 COPY ./prepareAndStartDev.bash /tmp/prepareAndStartDev.bash

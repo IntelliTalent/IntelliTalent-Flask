@@ -5,7 +5,6 @@ from .shared.rabbitmq import (
     listen_to_queue,
 )
 from instance import config
-from .logger import logger
 import os, threading
 
 def handle_command(command,data):

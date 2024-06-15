@@ -10,7 +10,6 @@ from .shared.helpers import (
 )
 from instance import config
 from pymongo import MongoClient
-from flask_sqlalchemy import SQLAlchemy
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
 import atexit, os, threading, json
