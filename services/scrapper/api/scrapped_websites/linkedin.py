@@ -58,7 +58,7 @@ def get_job_cards_main_info(soup, place):
     Get the job card info from the search results page
     Args:
         soup (BeautifulSoup): The beautiful soup object
-        place (str): The place of the job (On Site, Hybrid, Remote)
+        place (int): The place of the job (1: On Site, 2: Remote, 3: Hybrid)
     Returns:
         list: The list of job cards
     """
@@ -169,19 +169,6 @@ def remove_duplicates(joblist):
     joblist.sort(key=lambda x: (x["title"], x["company"]))
     joblist = [next(g) for k, g in groupby(joblist, key=lambda x: (x["title"], x["company"]))]
     return joblist
-
-def safe_detect(text):
-    """
-    Detect the language of the given text
-    Args:
-        text (str): The text to detect its language
-    Returns:
-        str: The detected language
-    """
-    try:
-        return detect(text)
-    except LangDetectException:
-        return "en"
 
 def get_job_cards(search_queries, rounds = ROUNDS, pages_to_scrape = config.PAGES_TO_SCRAPE):
     """
