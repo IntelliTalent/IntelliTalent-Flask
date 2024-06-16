@@ -151,6 +151,8 @@ def generate_CV(data):
         
         word_link = upload_file(filename)
         
+        # TODO: delete the generated file, here and in cover letter service
+        
         response = {
             "word": word_link,
         }
