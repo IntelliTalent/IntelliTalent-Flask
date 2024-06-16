@@ -13,8 +13,7 @@ from .logger import logger
 from datetime import datetime
 from docx import Document
 from docx.shared import Pt, Cm, Mm
-
-import json
+import os, json
 
 def health_check():
     logger.info("Health check")
@@ -141,6 +140,12 @@ def generate_CV(data):
         user_fullname = heading_data["fullName"].replace(" ", "-")
         
         filename = f'api/generated-cvs/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}.docx'
+        
+        # if the directory is not created, create it
+        directory = 'api/generated-cvs'
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
 
         document.save(filename)
         
