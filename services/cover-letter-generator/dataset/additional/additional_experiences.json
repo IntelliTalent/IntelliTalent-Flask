@@ -1,0 +1,9 @@
+{
+    "additional_experiences": [
+        "I have also worked as a $worked_position at $worked_company, for $company_exp_years years",
+        "I have also experience working at $worked_company as a $worked_position for $company_exp_years years",
+        "I worked at $worked_company as a $worked_position.",
+        "I was a $worked_position at $worked_company for $company_exp_years years.",
+        "My experience as an $worked_position at $worked_company has equipped me with the practical skills required for this role."
+    ]
+}

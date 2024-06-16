@@ -1,0 +1,31 @@
+FROM python:3.8-alpine
+
+WORKDIR /usr/src/app/
+
+ARG APP
+
+ENV APP=${APP}
+
+RUN apk add --no-cache gcc musl-dev libffi-dev bash git python3-dev build-base entr
+
+COPY ./services/${APP}/requirements.txt .
+
+RUN pip install --upgrade pip
+
+RUN pip install -r requirements.txt
+
+RUN python -m nltk.downloader punkt
+
+COPY ./services/${APP}/ .
+
+COPY ./prepareAndStartDev.bash /tmp/prepareAndStartDev.bash
+
+RUN chmod +x /tmp/prepareAndStartDev.bash
+
+RUN chmod +x ./start.bash
+
+RUN chmod +x ./startDev.bash
+
+RUN chmod +x ./stop.bash
+
+CMD ["bash", "/tmp/prepareAndStartDev.bash"]

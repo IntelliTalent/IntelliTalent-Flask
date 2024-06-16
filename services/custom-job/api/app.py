@@ -5,22 +5,15 @@ from .shared.rabbitmq import (
     listen_to_queue,
 )
 from instance import config
-from .logger import logger
 import os, threading
 
-def handle_command(command):
-    """ TODO:
-        Define command/s to handle this functionalities:
-           - Should handle an event to extract structured job details and its context (important for Quiz service) from a prompt and return it back. 
-           - The user then will see the structured job and edit it, including custom filters, enable quiz generation, and interview quetions, in case of interview, the user will enter a list of questions, then this service will call Jobs service to insert the structured job into DB. 
-    """
-    
+def handle_command(command,data):
     if command == "healthCheck":
         return health_check()
     elif command == "createCustomJob":
-        return create_custom_job()
+        return create_custom_job(data)
     
-    else:
+    else:   
         return {"error": "Unknown command"}
 
 rabbitmq_user = os.getenv('RABBITMQ_USER')
@@ -41,6 +34,7 @@ rabbitmq_thread.start()
 
 from .index import (
     health_check,
+    create_custom_job
 )
 
 # endpoints for testing, the actual endpoints communicate through RabbitMQ patterns

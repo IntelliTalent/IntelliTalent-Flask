@@ -1,0 +1,18 @@
+{
+    "intro": [
+        "I am eager to apply for the $position position at $applying_company.",
+        "I am excited about the possibility of working at $applying_company and contributing to your team."
+    ],
+    "experience": [
+        "I have a strong background in systems engineering and have been working as a $worked_position for the past $total_exp_years years.",
+        "I worked at $worked_company as a $worked_position."
+    ],
+    "skills": [
+        "I have extensive experience with $skill, $skill, and $skill, and am proficient in $skill.",
+        "I have a B.S. in Computer Engineering, and I am proficient in $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "Thank you for considering my application.",
+        "Thank you for considering my application."
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm writing to express my interest in the $position position at $applying_company, found on Indeed. With over $total_exp_years years in cyber security, I am eager to bring my skills to your team."
+    ],
+    "experience": [
+        "In my role at $worked_company, I've secured the network for users, preventing unauthorized access and ensuring business continuity."
+    ],
+    "skills": [
+        "I believe my experience in cyber security planning and IT operations aligns well with your needs."
+    ],
+    "closing": [
+        "Thank you for considering my application, and I look forward to the possibility of discussing my qualifications with you."
+    ]
+}

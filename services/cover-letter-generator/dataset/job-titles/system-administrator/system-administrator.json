@@ -1,0 +1,18 @@
+{
+    "intro": [
+        "I am interested in the $position position at $applying_company.",
+        "I am writing to apply for the $position position at $applying_company."
+    ],
+    "experience": [
+        "I have a proven track record of managing and maintaining servers and resolving complex technical issues.",
+        "My strong problem-solving skills, attention to detail, and ability to work under pressure have allowed me to thrive in challenging situations."
+    ],
+    "skills": [
+        "I have over $total_exp_years years of experience in system administration, and I am proficient in $skill, $skill, and $skill.",
+        "I have a strong technical background, with expertise in $skill, $skill, and $skill."
+    ],
+    "closing": [
+        "I am excited about the opportunity to contribute to $applying_company's success.",
+        "I look forward to the possibility of contributing to your team."
+    ]
+}

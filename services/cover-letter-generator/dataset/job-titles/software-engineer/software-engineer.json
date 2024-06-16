@@ -1,0 +1,18 @@
+{
+    "intro": [
+        "I'm expressing interest in the $position position at $applying_company. With over $total_exp_years years in the industry.",
+        "I'm excited to apply for the $position position at $applying_company."
+    ],
+    "experience": [
+        "Throughout my career, I've thrived in fast-paced environments, delivering high-quality products and collaborating effectively. My expertise in the big data ecosystem and relational databases equips me to handle complex technical challenges.",
+        "With over $total_exp_years years of software engineering experience, I have a diverse skill set that exceeds expectations for the role."
+    ],
+    "skills": [
+        "Beyond technical skills, I offer strong problem-solving, communication, and collaboration abilities. I'm eager to contribute to $applying_company's products.",
+        "As a self-motivated individual with strong communication skills, I bring innovative ideas to software development projects."
+    ],
+    "closing": [
+        "Thank you for considering my application.",
+        "Thank you for considering my application."
+    ]
+}

@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
+if [ -f pid ]; then
+    bash stop.bash
+fi
 
 echo "Starting Quiz App"
+
+mkdir logs
 
 gunicorn quiz_app_wsgi:app \
 	-p ./pid \

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
+if [ -f pid ]; then
+    bash stop.bash
+fi
 
 echo "Starting Custom Job App"
 

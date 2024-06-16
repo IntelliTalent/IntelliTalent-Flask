@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source venv/bin/activate
+if [ -f pid ]; then
+    bash stop.bash
+fi
 
 echo "Starting Scrapper App"
 
@@ -9,7 +11,6 @@ gunicorn scrapper_app_wsgi:app \
 	-k eventlet \
 	-b 0.0.0.0:5000 \
 	--name=scrapper_app \
-	--workers 1 \
 	--log-level 0 \
 	--log-file logs/scrapper_app.log \
 	--error-logfile logs/scrapper_app.error.log \

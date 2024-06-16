@@ -1,0 +1,14 @@
+{
+    "intro": [
+        "I'm expressing interest in the $position role at $applying_company."
+    ],
+    "experience": [
+        "With over $total_exp_years years in IT, I've worked on diverse systems."
+    ],
+    "skills": [
+        "My communication skills and track record in leadership and innovation align well with your needs."
+    ],
+    "closing": [
+        "I've attached my resume and references and look forward to discussing my fit for the role."
+    ]
+}
