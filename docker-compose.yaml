@@ -13,9 +13,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/scrapper/:/usr/src/app/
     ports:
       - "3001:5000"
 
@@ -32,9 +29,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/cover-letter-generator/:/usr/src/app/
     ports:
       - "3002:5000"
 
@@ -51,9 +45,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/job-extractor/:/usr/src/app/
     ports:
       - "3003:5000"
 
@@ -70,9 +61,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/cv-extractor/:/usr/src/app/
     ports:
       - "3004:5000"
 
@@ -89,9 +77,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/custom-job/:/usr/src/app/
     ports:
       - "3005:5000"
 
@@ -108,9 +93,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/quiz/:/usr/src/app/
     ports:
       - "3006:5000"
 
@@ -127,9 +109,6 @@ services:
       - ../.env
     networks:
       - intelli-network
-    volumes:
-      - ./shared/:/usr/src/app/api/shared/
-      - ./services/cv-generator/:/usr/src/app/
     ports:
       - "3007:5000"
 

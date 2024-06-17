@@ -45,13 +45,24 @@ def heading(document, heading_content):
     add_hyperlink(second_line, heading_content["email"], "mailto:" + heading_content["email"])
     heading_style(second_line)
 
-    third_line = document.add_paragraph("Github: ")
-    third_line.add_run("")
-    add_hyperlink(third_line, heading_content["gitHub"], heading_content["gitHub"])
-    third_line.add_run(" LinkedIn: ")
-    third_line.add_run("")
-    add_hyperlink(third_line, heading_content["linkedIn"], heading_content["linkedIn"])
-    heading_style(third_line)
+    if (heading_content.get("gitHub") and heading_content["gitHub"] != "") and (heading_content.get("linkedIn") and heading_content["linkedIn"] != ""):
+        third_line = document.add_paragraph("Github: ")
+        third_line.add_run("")
+        add_hyperlink(third_line, heading_content["gitHub"], heading_content["gitHub"])
+        third_line.add_run(" LinkedIn: ")
+        third_line.add_run("")
+        add_hyperlink(third_line, heading_content["linkedIn"], heading_content["linkedIn"])
+        heading_style(third_line)
+    elif heading_content.get("gitHub") and heading_content["gitHub"] != "":
+        third_line = document.add_paragraph("Github: ")
+        third_line.add_run("")
+        add_hyperlink(third_line, heading_content["gitHub"], heading_content["gitHub"])
+        heading_style(third_line, is_dual_heading=False)
+    elif heading_content.get("linkedIn") and heading_content["linkedIn"] != "":
+        third_line = document.add_paragraph("LinkedIn: ")
+        third_line.add_run("")
+        add_hyperlink(third_line, heading_content["linkedIn"], heading_content["linkedIn"])
+        heading_style(third_line, is_dual_heading=False)
     
     fourth_line = document.add_paragraph("City: ")
     fourth_line.add_run(heading_content["city"])
