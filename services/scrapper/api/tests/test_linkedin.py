@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 from bs4 import BeautifulSoup
 import requests
 from api.scrapped_websites.linkedin import (
+    JOB_PLACES_MAP,
     get_with_retry,
     get_job_cards_main_info,
     get_job_description,
@@ -15,7 +16,7 @@ from api.scrapped_websites.linkedin import (
 )
 from instance import config
 
-class IndexTest(unittest.TestCase):
+class LinkedInTest(unittest.TestCase):
     
     @patch('api.scrapped_websites.linkedin.requests.get')
     def test_get_with_retry(self, mock_requests_get):
@@ -42,16 +43,63 @@ class IndexTest(unittest.TestCase):
 
         mock_sleep.assert_called_with(delay)
 
-        mock_logger.debug.assert_called_with(f"Timeout occurred for URL: {url}, retrying in {delay}s...")
-        mock_logger.error.assert_called_with(f"An error occurred while retrieving the URL: {url}")
+        mock_logger.debug.assert_called_with(f"Timeout in getting URL: {url}, retrying")
+        mock_logger.error.assert_called_with(f"Error in getting URL: {url}")
         mock_logger.exception.assert_called()
         
-    def test_job_cards_main_info_empty(self):
-        soup = BeautifulSoup("", 'html.parser')
-        place = "Remote"
-        expected_result = []
-        result = get_job_cards_main_info(soup, place)
-        self.assertEqual(result, expected_result)
+    def test_get_job_cards_main_info(self):
+        html_doc = """
+        <html>
+        <body>
+            <div data-entity-urn="urn:li:jobPosting:123">
+                <div class="base-search-card__info">
+                    <h3>Software Engineer</h3>
+                    <a class="hidden-nested-link">Tech Company</a>
+                    <span class="job-search-card__location">New York, NY</span>
+                    <time class="job-search-card__listdate" datetime="2023-04-01"></time>
+                </div>
+            </div>
+            <div data-entity-urn="urn:li:jobPosting:456">
+                <div class="base-search-card__info">
+                    <h3>Data Scientist</h3>
+                    <a class="hidden-nested-link">Data Corp</a>
+                    <span class="job-search-card__location">San Francisco, CA</span>
+                    <time class="job-search-card__listdate--new" datetime="2023-04-02"></time>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        
+        job_cards = get_job_cards_main_info(soup, 1)
+        self.assertEqual(len(job_cards), 2)
+
+        self.assertEqual(job_cards[0]['title'], 'Software Engineer')
+        self.assertEqual(job_cards[0]['company'], 'Tech Company')
+        self.assertEqual(job_cards[0]['jobLocation'], 'New York, NY')
+        self.assertEqual(job_cards[0]['publishedAt'], '2023-04-01')
+        self.assertTrue(job_cards[0]['url'].startswith('http://www.linkedin.com/jobs/view/'))
+        self.assertEqual(job_cards[0]['jobPlace'], JOB_PLACES_MAP[1])
+
+        self.assertEqual(job_cards[1]['title'], 'Data Scientist')
+        self.assertEqual(job_cards[1]['company'], 'Data Corp')
+        self.assertEqual(job_cards[1]['jobLocation'], 'San Francisco, CA')
+        self.assertEqual(job_cards[1]['publishedAt'], '2023-04-02')
+        self.assertTrue(job_cards[1]['url'].startswith('http://www.linkedin.com/jobs/view/'))
+        self.assertEqual(job_cards[1]['jobPlace'], JOB_PLACES_MAP[1])
+        
+    def test_get_job_cards_main_info_empty(self):
+        html_doc = """
+        <html>
+        <body>
+        </body>
+        </html>
+        """
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        
+        job_cards = get_job_cards_main_info(soup, 1)
+        self.assertEqual(len(job_cards), 0)
         
     @patch('api.scrapped_websites.linkedin.logger')
     def test_get_job_description_success(self, mock_logger):
@@ -75,8 +123,8 @@ class IndexTest(unittest.TestCase):
     def test_get_job_description_failure(self, mock_logger):
         HTML_CONTENT = "<div class='wrong_class'>No job description here.</div>"
         soup = BeautifulSoup(HTML_CONTENT, 'html.parser')
-        self.assertEqual(get_job_description(soup), "Could not find Job Description")
-        mock_logger.error.assert_called_once_with("(LinkedIn) Could not find Job Description, retrying...")
+        self.assertEqual(get_job_description(soup), "no job description")
+        mock_logger.error.assert_called_once_with("(LinkedIn) no job description, retrying...")
         
     def test_get_search_queries(self):
         # assert that the function returns a list and its length is (JOBS_TITLES len) * (JOB_LOCATIONS len) * 3 (JOBS_PLACES len)
@@ -217,4 +265,4 @@ class IndexTest(unittest.TestCase):
         mock_check_closed_class.assert_called()
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestLoader().loadTestsFromTestCase(IndexTest))
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestLoader().loadTestsFromTestCase(LinkedInTest))

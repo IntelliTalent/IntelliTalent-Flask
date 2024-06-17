@@ -10,7 +10,7 @@ from api.scrapped_websites.wuzzuf import (
 )
 from instance import config
 
-class IndexTest(unittest.TestCase):
+class WuzzufTest(unittest.TestCase):
         
     def test_get_search_queries(self):
         # assert that the function returns a list and its length is 27 (JOBS_TITLES len) * 22 (JOB_LOCATIONS len)
@@ -224,4 +224,4 @@ class IndexTest(unittest.TestCase):
         self.assertFalse(updated_jobs[1]["isActive"])
 
 if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(unittest.TestLoader().loadTestsFromTestCase(IndexTest))
+    unittest.TextTestRunner(verbosity=2).run(unittest.TestLoader().loadTestsFromTestCase(WuzzufTest))
