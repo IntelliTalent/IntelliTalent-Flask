@@ -13,6 +13,7 @@ from api.scrapped_websites.linkedin import (
     check_closed_class,
     linkedin_check_active_jobs,
 )
+from instance import config
 
 class IndexTest(unittest.TestCase):
     
@@ -78,9 +79,9 @@ class IndexTest(unittest.TestCase):
         mock_logger.error.assert_called_once_with("(LinkedIn) Could not find Job Description, retrying...")
         
     def test_get_search_queries(self):
-        # assert that the function returns a list and its length is 27 (JOBS_TITLES len) * 22 (JOB_LOCATIONS len) * 3 (JOBS_PLACES len)
+        # assert that the function returns a list and its length is (JOBS_TITLES len) * (JOB_LOCATIONS len) * 3 (JOBS_PLACES len)
         self.assertIsInstance(get_search_queries(), list)
-        self.assertEqual(len(get_search_queries()), 27 * 22 * 3)
+        self.assertEqual(len(get_search_queries()), len(config.JOB_TITLES) * len(config.JOB_LOCATIONS) * 3)
         
     def test_remove_duplicates(self):
         # assert that the function removes duplicates based on the title and company
@@ -154,7 +155,7 @@ class IndexTest(unittest.TestCase):
         ]
         mock_get_with_retry.return_value = MagicMock()
         mock_get_job_description.return_value = "Job Description"
-        mock_perf_counter.side_effect = [1, 2]  # Simulate 1 second elapsed
+        mock_perf_counter.side_effect = [1, 2]  # simulate 1 second elapsed
 
         linkedin_scrape_thread(MagicMock())
 
@@ -203,14 +204,14 @@ class IndexTest(unittest.TestCase):
         mock_get_with_retry.side_effect = [MagicMock(), None, MagicMock()]
         mock_check_closed_class.side_effect = [True, False]
         
+        
+        result = linkedin_check_active_jobs(jobs)
+        
         expected_jobs = [
             {"isActive": True},
             {"isActive": False},
             {"isActive": False}
         ]
-        
-        result = linkedin_check_active_jobs(jobs)
-        
         self.assertEqual(result, expected_jobs)
         mock_get_with_retry.assert_called()
         mock_check_closed_class.assert_called()
