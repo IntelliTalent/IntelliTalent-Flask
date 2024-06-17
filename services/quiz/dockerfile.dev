@@ -16,7 +16,7 @@ RUN pip install -r requirements.txt
 
 COPY ./services/${APP}/ .
 
-COPY ./shared/ .
+COPY ./shared ./api/shared
 
 COPY ./prepareAndStartDev.bash /tmp/prepareAndStartDev.bash
 
