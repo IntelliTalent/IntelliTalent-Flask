@@ -22,7 +22,7 @@ unstructured_jobs_schema = {
     'deletedAt': {'type': 'date', 'default': None}
 }
 
-# Create the 'unstructured_jobs' collection and add validation rules
+# Create the 'unstructuredjobs' collection and add validation rules
 database.create_collection('unstructuredjobs', validator=unstructured_jobs_schema)
 
-# Must create unique index in this collection in mongodb on title, company, date
+# Must create unique index in this collection in mongodb on title, company, publishedAt
