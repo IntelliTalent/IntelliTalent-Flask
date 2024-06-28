@@ -15,6 +15,9 @@ def get_month_year(date):
     Returns:
         str: The month and year.
     """
+    if date == None:
+        return "Present"
+
     # if it is str with val = Present or No expiry date, return it as is
     if date == "Present" or date == "No expiry date":
         return date
@@ -223,7 +226,7 @@ def upload_file(file_path):
     Returns:
         str: The uploaded file link
     """
-    url = f"http://{config.SERVER_HOST}:3000/api/v1/uploader/upload"
+    url = f"http://{config.SERVER_HOST}:{config.NODE_PORT}/api/v1/uploader/upload"
     
     filename = file_path.split('/')[-1]
 
