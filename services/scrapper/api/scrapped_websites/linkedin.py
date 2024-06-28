@@ -6,8 +6,6 @@ import requests
 import time as tm
 from urllib.parse import quote
 from itertools import groupby
-from langdetect import detect
-from langdetect.lang_detect_exception import LangDetectException
 
 # Constants
 
@@ -46,10 +44,10 @@ def get_with_retry(url, retries=RETRIES, delay=DELAY):
             r = requests.get(url)
             return BeautifulSoup(r.content, "html.parser")
         except requests.exceptions.Timeout:
-            logger.debug(f"Timeout occurred for URL: {url}, retrying in {delay}s...")
+            logger.debug(f"Timeout in getting URL: {url}, retrying")
             tm.sleep(delay)
         except Exception as e:
-            logger.error(f"An error occurred while retrieving the URL: {url}")
+            logger.error(f"Error in getting URL: {url}")
             logger.exception(e)
     return None
 
@@ -58,25 +56,30 @@ def get_job_cards_main_info(soup, place):
     Get the job card info from the search results page
     Args:
         soup (BeautifulSoup): The beautiful soup object
-        place (str): The place of the job (On Site, Hybrid, Remote)
+        place (int): The place of the job (1: On Site, 2: Remote, 3: Hybrid)
     Returns:
         list: The list of job cards
     """
-    # Parsing the job card info (title, company, location, date, job_url) from the beautiful soup object
-    joblist = []
+    jobs = []
 
     try:
         divs = soup.find_all("div", class_="base-search-card__info")
     except:
-        logger.error("Empty page, no jobs found")
-        return joblist
+        logger.error("no jobs found")
+        return jobs
 
     for item in divs:
-        title = item.find("h3").text.strip()
+        job_title = item.find("h3").text.strip()
         
-        company = item.find("a", class_="hidden-nested-link")
+        company_name = item.find("a", class_="hidden-nested-link")
         
-        location = item.find("span", class_="job-search-card__location")
+        job_location = item.find("span", class_="job-search-card__location")
+        
+        date_new_class = item.find("time", class_ = "job-search-card__listdate--new")
+        
+        date_old_class = item.find("time", class_="job-search-card__listdate")
+        
+        date = date_old_class["datetime"] if date_old_class else date_new_class["datetime"] if date_new_class else ""
         
         # Get the job posting id
         parent_div = item.parent
@@ -85,22 +88,25 @@ def get_job_cards_main_info(soup, place):
         
         # Construct job url
         job_url = f"http://www.linkedin.com/jobs/view/{job_posting_id}/"
-
-        date_tag_new = item.find("time", class_ = "job-search-card__listdate--new")
-        date_tag = item.find("time", class_="job-search-card__listdate")
-        date = date_tag["datetime"] if date_tag else date_tag_new["datetime"] if date_tag_new else ""
         
         job = {
             "jobId": job_posting_id,
-            "title": title,
-            "company": company.text.strip().replace("\n", " ") if company else "",
-            "jobLocation": location.text.strip() if location else "",
+            "title": job_title,
+            "company": company_name.text.strip().replace("\n", " ") if company_name else "",
+            "jobLocation": job_location.text.strip() if job_location else "",
             "publishedAt": date,
             "url": job_url,
             "jobPlace": JOB_PLACES_MAP[place],
         }
-        joblist.append(job)
-    return joblist
+        jobs.append(job)
+    return jobs
+
+def clean_text(text):
+    return (text.replace("\n\n", "")
+                .replace("::marker", "-")
+                .replace("-\n", "- ")
+                .replace("Show less", "")
+                .replace("Show more", ""))
 
 def get_job_description(soup):
     """
@@ -112,24 +118,19 @@ def get_job_description(soup):
     """
     div = soup.find("div", class_="description__text description__text--rich")
     if div:
-        # Remove unwanted elements
-        for element in div.find_all(["span", "a"]):
-            element.decompose()
-
-        # Replace bullet points
-        for ul in div.find_all("ul"):
-            for li in ul.find_all("li"):
-                li.insert(0, "-")
+        for element in div.find_all(["span", "a", "ul"]):
+            if element.name in ["span", "a"]:
+                element.decompose()
+            else:  # handling 'ul' elements
+                for li in element.find_all("li"):
+                    li.insert(0, "-")
 
         text = div.get_text(separator="\n").strip()
-        text = text.replace("\n\n", "")
-        text = text.replace("::marker", "-")
-        text = text.replace("-\n", "- ")
-        text = text.replace("Show less", "").replace("Show more", "")
+        text = clean_text(text)
         return text
     else:
-        logger.error("(LinkedIn) Could not find Job Description, retrying...")
-        return "Could not find Job Description"
+        logger.error("(LinkedIn) no job description, retrying...")
+        return "no job description"
 
 def get_search_queries():
     """
@@ -156,32 +157,20 @@ def get_search_queries():
                 
     return search_queries
 
-def remove_duplicates(joblist):
+def sort_and_group_key(item):
+    return item["title"], item["company"]
+
+def remove_duplicates(jobs):
     """
-    Remove duplicate jobs in the joblist
+    Remove duplicate jobs in the jobs
     Args:
-        joblist (list): The list of jobs
+        jobs (list): The list of jobs
     Returns:
         list: The list of jobs with duplicates removed
     """
-    # Remove duplicate jobs in the joblist.
-    # Duplicate is defined as having the same title and company.
-    joblist.sort(key=lambda x: (x["title"], x["company"]))
-    joblist = [next(g) for k, g in groupby(joblist, key=lambda x: (x["title"], x["company"]))]
-    return joblist
-
-def safe_detect(text):
-    """
-    Detect the language of the given text
-    Args:
-        text (str): The text to detect its language
-    Returns:
-        str: The detected language
-    """
-    try:
-        return detect(text)
-    except LangDetectException:
-        return "en"
+    jobs.sort(key=sort_and_group_key)
+    jobs = [next(group) for _, group in groupby(jobs, key=sort_and_group_key)]
+    return jobs
 
 def get_job_cards(search_queries, rounds = ROUNDS, pages_to_scrape = config.PAGES_TO_SCRAPE):
     """
@@ -233,7 +222,7 @@ def linkedin_scrape_thread(unstructured_jobs_db):
     Returns:
         None
     """
-    start_time = tm.perf_counter()
+    start = tm.perf_counter()
     job_list = []
 
     search_queries = get_search_queries()
@@ -245,11 +234,11 @@ def linkedin_scrape_thread(unstructured_jobs_db):
             
             for _ in range(RETRIES):
                 # Get the job description
-                desc_soup = get_with_retry(job["url"])
+                description_soup_object = get_with_retry(job["url"])
                 
-                job["description"] = get_job_description(desc_soup)
+                job["description"] = get_job_description(description_soup_object)
                 
-                if job["description"] != "Could not find Job Description":
+                if job["description"] != "no job description":
                     break
             
             job_list.append(job)
@@ -259,8 +248,8 @@ def linkedin_scrape_thread(unstructured_jobs_db):
     else:
         logger.debug("(LinkedIn) No jobs found")
     
-    end_time = tm.perf_counter()
-    logger.info(f"Scraping LinkedIn finished in {end_time - start_time:.2f} seconds")
+    end = tm.perf_counter()
+    logger.info(f"Scraping LinkedIn finished in {end - start:.2f} seconds")
     
 def check_closed_class(soup):
     """
@@ -284,7 +273,6 @@ def linkedin_check_active_jobs(jobs):
     """
     # This is not a 100% accurate method to check if the job is active or not, 
     # because linkedin sometimes return empty page for the job in the request,
-    # but this method ensures that it won't return false positive. (not active while it's active)
     # Check the active jobs
     for job in jobs:
         # Get the job status

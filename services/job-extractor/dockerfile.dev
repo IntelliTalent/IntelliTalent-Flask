@@ -18,6 +18,8 @@ RUN python -m nltk.downloader punkt
 
 COPY ./services/${APP}/ .
 
+COPY ./shared ./api/shared
+
 COPY ./prepareAndStartDev.bash /tmp/prepareAndStartDev.bash
 
 RUN chmod +x /tmp/prepareAndStartDev.bash
