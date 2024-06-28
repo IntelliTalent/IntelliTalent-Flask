@@ -7,7 +7,6 @@ services:
       dockerfile: ./services/scrapper/dockerfile.dev
       args:
         - APP=scrapper
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
@@ -23,7 +22,6 @@ services:
       dockerfile: ./services/cover-letter-generator/dockerfile.dev
       args:
         - APP=cover-letter-generator
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
@@ -39,7 +37,6 @@ services:
       dockerfile: ./services/job-extractor/dockerfile.dev
       args:
         - APP=job-extractor
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
@@ -55,7 +52,6 @@ services:
       dockerfile: ./services/cv-extractor/dockerfile.dev
       args:
         - APP=cv-extractor
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
@@ -71,7 +67,6 @@ services:
       dockerfile: ./services/custom-job/dockerfile.dev
       args:
         - APP=custom-job
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
@@ -87,7 +82,6 @@ services:
       dockerfile: ./services/quiz/dockerfile.dev
       args:
         - APP=quiz
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
@@ -103,7 +97,6 @@ services:
       dockerfile: ./services/cv-generator/dockerfile.dev
       args:
         - APP=cv-generator
-    image: clg:latest
     restart: unless-stopped
     env_file:
       - ../.env
