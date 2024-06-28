@@ -139,11 +139,11 @@ def generate_CV(data):
         
         user_fullname = heading_data["fullName"].replace(" ", "-")
         
-        filename = f'api/generated-cvs/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}.docx'
-        
         # if the directory is not created, create it
         directory = 'api/generated-cvs'
-
+        
+        filename = f'{directory}/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}.docx'
+        
         if not os.path.exists(directory):
             os.makedirs(directory)
 
@@ -151,7 +151,7 @@ def generate_CV(data):
         
         word_link = upload_file(filename)
         
-        # TODO: delete the generated file, here and in cover letter service
+        os.remove(filename)
         
         response = {
             "word": word_link,
