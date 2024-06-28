@@ -7,8 +7,7 @@ from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
-# TODO: change to lg
-embedding = spacy.load("en_core_web_sm")
+embedding = spacy.load("en_core_web_md")
     
 def get_available_titles_vectors():
     """
