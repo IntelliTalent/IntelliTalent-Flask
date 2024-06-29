@@ -416,11 +416,7 @@ def generate_cover_letter_data(user_info, wanted_job_info):
         additional_experiences = json.load(f)
         available_templates["additional_experiences"] = additional_experiences["additional_experiences"]
     
-    try:
-        filled_cover_letter = fill_cover_letter(available_templates, user_info, wanted_job_info)
-    except Exception as e:
-        logger.exception(e)
-        return
+    filled_cover_letter = fill_cover_letter(available_templates, user_info, wanted_job_info)
     
     user_fullname = user_info["fullName"].replace(" ", "-")
     
