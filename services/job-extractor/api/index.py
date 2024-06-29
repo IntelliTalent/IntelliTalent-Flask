@@ -1,9 +1,4 @@
-from flask import request, jsonify, current_app as app
 import simplejson as json
-
-from .shared.helpers import (
-    make_response_json,
-)
 from .logger import logger
 from .job_extractor.job_extractor import prepare_job
 

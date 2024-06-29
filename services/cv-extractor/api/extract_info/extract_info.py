@@ -5,9 +5,18 @@ from .extract_experience import *
 from .extract_main_info import *
 
 
-def extract_info():
+def extract_info(filename):
+    """
+    Extract info from the cv
+    
+    Args:
+        filename (str): The filename of the cv
+        
+    Returns:
+        dict: The extracted info from the cv
+    """
     # Extract the text and all the important sections from the cv
-    cv_text = extract_text_from_pdf()
+    cv_text = extract_text_from_pdf(filename)
     cv_sections = extract_sections(cv_text)
     
     sections = cv_sections.keys()
