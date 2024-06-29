@@ -33,6 +33,30 @@ class HelpersTest(unittest.TestCase):
         heading(document, heading_content)
         self.assertEqual(len(document.paragraphs), 4)
         
+        document = Document()
+        heading_content = {
+            "fullName": "John Doe",
+            "phoneNumber": "1234567890",
+            "email": "john@example.com",
+            "linkedIn": "https://linkedin.com/in/johndoe",
+            "city": "City",
+            "country": "Country"
+        }
+        heading(document, heading_content)
+        self.assertEqual(len(document.paragraphs), 4)
+        
+        document = Document()
+        heading_content = {
+            "fullName": "John Doe",
+            "phoneNumber": "1234567890",
+            "email": "john@example.com",
+            "gitHub": "https://github.com/johndoe",
+            "city": "City",
+            "country": "Country"
+        }
+        heading(document, heading_content)
+        self.assertEqual(len(document.paragraphs), 4)
+        
     def test_objective(self):
         document = Document()
         objective_content = {
