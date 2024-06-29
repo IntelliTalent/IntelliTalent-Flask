@@ -153,7 +153,7 @@ def wuzzuf_scrape_thread(unstructured_jobs_db):
     Returns:
         None
     """
-    start_time = tm.perf_counter()
+    start = tm.perf_counter()
 
     search_queries = get_search_queries()
     all_jobs = get_jobs(search_queries)
@@ -168,8 +168,8 @@ def wuzzuf_scrape_thread(unstructured_jobs_db):
     else:
         logger.debug("(Wuzzuf) No jobs found")
     
-    end_time = tm.perf_counter()
-    logger.info(f"Scraping Wuzzuf finished in {end_time - start_time:.2f} seconds")
+    end = tm.perf_counter()
+    logger.info(f"Scraping Wuzzuf finished in {end - start:.2f} seconds")
 
 def is_expired(date_string):
     """
