@@ -1,7 +1,7 @@
 from .logger import logger
 import json
 
-from helpers.helper import extract_job_titles, extract_skills, extract_locations, extract_job_types, extract_years_of_experience, extract_job_end_dates, extract_company_names, extract_countries_cities, extract_languages
+from .helpers.helper import extract_job_titles, extract_skills, extract_locations, extract_job_types, extract_years_of_experience, extract_job_end_dates, extract_company_names, extract_countries_cities, extract_languages
     
 def health_check():
     logger.debug("Health check")

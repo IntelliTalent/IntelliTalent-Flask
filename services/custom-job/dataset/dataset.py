@@ -5,6 +5,7 @@ skills = [
   "C++",
   "R",
   "MATLAB",
+  "Perl",
   "AI",
   "ML",
   "Front-end",
@@ -119,6 +120,7 @@ skills = [
   "ASP.NET",
   "Ruby on Rails",
   "Express.js",
+  "Express",
   "Laravel",
   "Play Framework",
   "Gin",
@@ -164,6 +166,7 @@ skills = [
   "HTML",
   "CSS",
   "React.js",
+  "React",
   "Angular",
   "Vue.js",
   "Design patterns",
@@ -767,8 +770,10 @@ countries = [
 # List of locations
 locations = ["remote", "on-site", "hybrid"]
 
-# List of job types
 job_types = {
-    "full-time":["full time", "full-time", "fulltime"],
-    "part-time":["part time", "part-time", "parttime"],
+    "Full-Time": ["full-time", "full time", "FT"],
+    "Part-Time": ["part-time", "part time", "PT"],
+    "Contract": ["contract", "temporary"],
+    "Internship": ["internship", "intern"],
+    "Freelance": ["freelance", "freelancer"]
 }
