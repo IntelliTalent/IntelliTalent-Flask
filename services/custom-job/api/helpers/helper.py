@@ -41,8 +41,13 @@ def extract_job_titles(prompt):
 
 def extract_locations(prompt):
     """Extract locations from the given prompt."""
-    location_pattern = re.compile(r'\b(?:' + '|'.join(re.escape(location) for location in locations) + r')\b', re.IGNORECASE)
-    return location_pattern.findall(prompt)
+    extracted_job_locations = set()
+    for canonical_location, variations in locations.items():
+        for variation in variations:
+            # check if the variation is in the prompt using regex
+            if re.search(r'\b' + re.escape(variation) + r'\b', prompt, re.IGNORECASE):
+                extracted_job_locations.add(canonical_location)
+    return list(extracted_job_locations)
 
 def extract_job_types(prompt):
     """Extract job types from the given prompt."""
@@ -50,7 +55,7 @@ def extract_job_types(prompt):
     extracted_job_types = set()
     for canonical_title, variations in job_types.items():
         for variation in variations:
-            if variation in prompt:
+            if re.search(r'\b' + re.escape(variation) + r'\b', prompt, re.IGNORECASE):
                 extracted_job_types.add(canonical_title)
     return list(extracted_job_types)
 
