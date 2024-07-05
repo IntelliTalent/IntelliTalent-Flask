@@ -105,16 +105,16 @@ class HelpersTest(unittest.TestCase):
 
     def test_extract_locations_single(self):
         prompt = "This is a remote position."
-        expected = ["remote"]
+        expected = ["Remote"]
         result = extract_locations(prompt)
         self.assertEqual(result, expected)
 
 
     def test_extract_locations_mixed_case(self):
         prompt = "The role can be on-site in Austin or remote."
-        expected = ["on-site", "remote"]
-        result = extract_locations(prompt)
-        self.assertEqual(result, expected)
+        expected = set(["On Site", "Remote"])
+        result = set(extract_locations(prompt))
+        self.assertSetEqual(result, expected)
 
     def test_extract_locations_no_match(self):
         prompt = "We are expanding our operations in Paris."
@@ -124,7 +124,7 @@ class HelpersTest(unittest.TestCase):
 
     def test_extract_locations_with_variation(self):
         prompt = "This is a hybrid role based in Berlin."
-        expected = ["hybrid"]
+        expected = ["Hybrid"]
         result = extract_locations(prompt)
         self.assertEqual(result, expected)
 
@@ -334,13 +334,13 @@ class HelpersTest(unittest.TestCase):
 
     def test_extract_full_time(self):
         prompt = "We are looking for a full-time developer."
-        expected = ["Full-Time"]
+        expected = ["Full Time"]
         result = extract_job_types(prompt)
         self.assertEqual(result, expected)
 
     def test_extract_part_time(self):
         prompt = "The position is part time and offers flexible hours."
-        expected = ["Part-Time"]
+        expected = ["Part Time"]
         result = extract_job_types(prompt)
         self.assertEqual(result, expected)
 
@@ -364,7 +364,7 @@ class HelpersTest(unittest.TestCase):
 
     def test_extract_multiple_job_types(self):
         prompt = "We offer both full-time and part-time positions."
-        expected = set(["Full-Time", "Part-Time"])
+        expected = set(["Full Time", "Part Time"])
         result = set(extract_job_types(prompt))
         self.assertSetEqual(result, expected)
 

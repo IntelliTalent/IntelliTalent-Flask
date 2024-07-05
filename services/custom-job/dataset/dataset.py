@@ -768,12 +768,18 @@ countries = [
 
 
 # List of locations
-locations = ["remote", "on-site", "hybrid"]
+locations = {
+    "Remote": ["remote", "work from home", "work remotely"],
+    "On Site": ["on site", "onsite", "work onsite", "on-site"],
+    "Hybrid": ["hybrid", "work hybrid", "work in office and remotely"],
+}
 
 job_types = {
-    "Full-Time": ["full-time", "full time", "FT"],
-    "Part-Time": ["part-time", "part time", "PT"],
-    "Contract": ["contract", "temporary"],
+    "Full Time": ["full-time", "full time", "FT"],
+    "Part Time": ["part-time", "part time", "PT"],
+    "Contract": ["contract", "Contract"],
+    "Temporary":["temporary", "temp", "Temporary"],
     "Internship": ["internship", "intern"],
-    "Freelance": ["freelance", "freelancer"]
+    "Freelance": ["freelance", "freelancer"],
+    "Volunteer": ["volunteer", "volunteering"]
 }

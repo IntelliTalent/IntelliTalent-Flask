@@ -23,13 +23,13 @@ def create_custom_job(data):
     countries, cities = extract_countries_cities(prompt)
 
     job = {
-        "title": extract_job_titles(prompt),
+        "title": extract_job_titles(prompt)[0],
         "skills": extract_skills(prompt),
-        "jobLocation": extract_locations(prompt),
-        "type": extract_job_types(prompt),
-        "neededExperience": extract_years_of_experience(prompt),
-        "jobEndDate": extract_job_end_dates(prompt),
-        "company": extract_company_names(prompt),
+        "jobLocation": extract_locations(prompt)[0],
+        "type": extract_job_types(prompt)[0],
+        "neededExperience": extract_years_of_experience(prompt)[0].split("-")[0],
+        "jobEndDate": extract_job_end_dates(prompt)[0],
+        "company": extract_company_names(prompt)[0],
         "city": cities,
         "country": countries,
         "languages": extract_languages(prompt)
