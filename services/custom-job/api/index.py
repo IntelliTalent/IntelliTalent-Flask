@@ -34,14 +34,14 @@ def create_custom_job(data):
 
     job = {
         "title": extract_job_titles(prompt)[0] if len(extracted_job_titles) > 0 else None,
-        "skills": extract_skills(prompt),
+        "skills": extracted_skills,
         "jobLocation": extract_locations(prompt)[0] if len(extracted_locations) > 0 else None,
         "type": extract_job_types(prompt)[0] if len(extracted_job_types) > 0 else None,
         "neededExperience": extract_years_of_experience(prompt)[0].split("-")[0] if len(extracted_years_of_experience) > 0 else None,
         "jobEndDate": extract_job_end_dates(prompt)[0] if len(extracted_job_end_dates) > 0 else None,
         "company": extract_company_names(prompt)[0] if len(extracted_company_names) > 0 else None,
-        "city": cities if len(cities) > 0 else None,
-        "country": countries if len(countries) > 0 else None,
+        "city": cities[0] if len(cities) > 0 else None,
+        "country": countries[0] if len(countries) > 0 else None,
         "languages": extract_languages(prompt) if len(extracted_languages) > 0 else None
     }
 
