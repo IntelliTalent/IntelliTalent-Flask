@@ -36,7 +36,7 @@ def create_custom_job(data):
         "title": extracted_job_titles[0] if len(extracted_job_titles) > 0 else None,
         "skills": extracted_skills,
         "jobPlace": extracted_locations[0] if len(extracted_locations) > 0 else None,
-        "type": extracted_job_types(prompt)[0] if len(extracted_job_types) > 0 else None,
+        "type": extracted_job_types[0] if len(extracted_job_types) > 0 else None,
         "neededExperience": extracted_years_of_experience[0].split("-")[0] if len(extracted_years_of_experience) > 0 else None,
         "jobEndDate": extracted_job_end_dates[0] if len(extracted_job_end_dates) > 0 else None,
         "company": extracted_company_names[0] if len(extracted_company_names) > 0 else None,
