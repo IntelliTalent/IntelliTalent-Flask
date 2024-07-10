@@ -81,9 +81,8 @@ scheduler = BackgroundScheduler(timezone=utc)
 
 # Cronjob to start the scraping process every 3 hours, passing the unstructured jobs db connection
 
-# TODO: uncomment this when production ready
-#scheduler.add_job(func=scrape, args=(app.mongo[db_name],), trigger="interval", hours=3)
-#scheduler.start()
+scheduler.add_job(func=scrape, args=(app.mongo[db_name],), trigger="interval", hours=12)
+scheduler.start()
 
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
