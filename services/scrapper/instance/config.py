@@ -24,3 +24,5 @@ JOB_LOCATIONS = ['Egypt', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Kuwa
 
 # The number of pages to scrape for each search query
 PAGES_TO_SCRAPE = 10
+
+SCRAPPING_INTERVAL_HOURS=24
