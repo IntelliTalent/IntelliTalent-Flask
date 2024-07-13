@@ -19,8 +19,10 @@ MONGODB_URI = f'mongodb://{mongo_user}:{mongo_pass}@{mongo_host}:{mongo_port}'
 
 # Constants for the scrapper
 
-JOB_TITLES = ['ai engineer', 'backend engineer', 'cloud engineer', 'cyber security engineer', 'data analyst', 'data engineer', 'data scientist', 'database administrator', 'database analyst', 'devops engineer', 'front end developer', 'full stack developer', 'it specialist', 'java developer', 'machine learning engineer', 'mobile app developer', 'network administrator', 'network engineer', 'python engineer', 'software developer', 'software engineer', 'support engineer', 'system administrator', 'systems analyst', 'systems engineer', 'ux designer', 'web developer']
-JOB_LOCATIONS = ['Egypt', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Kuwait', 'Bahrain', 'Oman', 'Jordan', 'Lebanon', 'Iraq', 'Syria', 'Yemen', 'Libya', 'Tunisia', 'Algeria', 'Morocco', 'Sudan', 'Palestine', 'Comoros', 'Djibouti', 'Mauritania', 'Somalia']
+JOB_TITLES = ['ai engineer', 'backend engineer', 'cloud engineer', 'data engineer', 'data scientist', 'database administrator', 'devops engineer', 'front end developer', 'full stack developer', 'machine learning engineer', 'mobile app developer', 'network engineer', 'software engineer', 'system administrator']
+JOB_LOCATIONS = ['Egypt', 'Saudi Arabia'] #, 'United Arab Emirates', 'Qatar', 'Kuwait', 'Bahrain', 'Oman', 'Jordan', 'Lebanon', 'Iraq', 'Syria', 'Yemen', 'Libya', 'Tunisia', 'Algeria', 'Morocco', 'Sudan', 'Palestine', 'Comoros', 'Djibouti', 'Mauritania', 'Somalia']
 
 # The number of pages to scrape for each search query
-PAGES_TO_SCRAPE = 10
+PAGES_TO_SCRAPE = 5
+
+SCRAPPING_INTERVAL_HOURS=24

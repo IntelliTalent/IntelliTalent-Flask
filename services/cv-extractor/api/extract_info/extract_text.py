@@ -24,14 +24,17 @@ def remove_empty_lines(text):
     
     return text_without_empty_lines
 
-def extract_text_from_pdf():
+def extract_text_from_pdf(filename):
     """
     Extract text from pdf
+    
+    Args:
+        filename (str): The filename of the pdf
 
     Returns:
         str: The text extracted from the pdf
     """
-    text = extract_text("cv.pdf")
+    text = extract_text(filename)
     text = remove_empty_lines(text)
     
     # Remove HTML tags

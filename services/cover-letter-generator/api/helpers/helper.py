@@ -6,9 +6,9 @@ import numpy as np
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+import os
 
-# TODO: change to lg
-embedding = spacy.load("en_core_web_sm")
+embedding = spacy.load("en_core_web_md")
     
 def get_available_titles_vectors():
     """
@@ -362,7 +362,7 @@ def write_to_word(cover_letter, filename):
         p.runs[0].bold = True
 
     # Save the document
-    doc.save(filename + ".docx")
+    doc.save(filename)
     
 def generate_cover_letter_data(user_info, wanted_job_info):
     """
@@ -416,15 +416,17 @@ def generate_cover_letter_data(user_info, wanted_job_info):
         additional_experiences = json.load(f)
         available_templates["additional_experiences"] = additional_experiences["additional_experiences"]
     
-    try:
-        filled_cover_letter = fill_cover_letter(available_templates, user_info, wanted_job_info)
-    except Exception as e:
-        logger.exception(e)
-        return
+    filled_cover_letter = fill_cover_letter(available_templates, user_info, wanted_job_info)
     
     user_fullname = user_info["fullName"].replace(" ", "-")
     
-    filename = f'api/generated-coverletters/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}'
+    dir_path = "api/generated-coverletters/"
+
+    # Create directory if it does not exist
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    
+    filename = f'{dir_path}/{user_fullname}-{datetime.now().strftime("%d-%m-%Y,%H-%M-%S")}.docx'
         
     # print to docx
     write_to_word(filled_cover_letter, filename)

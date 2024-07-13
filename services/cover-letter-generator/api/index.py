@@ -5,6 +5,7 @@ from .helpers.helper import (
     upload_file,
 )
 from .logger import logger
+import os
     
 def health_check():
     """
@@ -39,6 +40,9 @@ def generate_cover_letter(data):
         cover_letter_text, filename = generate_cover_letter_data(user_info, wanted_job_info)
         
         word_link = upload_file(filename)
+        
+        # delete the file after uploading
+        os.remove(filename)
         
         response = {
             "word": word_link,
