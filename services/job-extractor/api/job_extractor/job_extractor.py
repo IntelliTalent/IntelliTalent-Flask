@@ -243,6 +243,10 @@ def prepare_job(unstructured_job):
     if not title:
         return None
     
+    if unstructured_job.get("jobPlace", None):
+        if unstructured_job["jobPlace"] == "On-site":
+            unstructured_job["jobPlace"] = "On Site"
+            
     structured_job = {
         "jobId": unstructured_job.get("jobId", None),
         "title": title,
