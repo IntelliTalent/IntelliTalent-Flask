@@ -11,8 +11,12 @@ def get_job_info(data):
     
     new_jobs = []
     for job in jobs:
-        new_job = prepare_job(job)
-        if new_job:
-            new_jobs.append(new_job)
+        try:
+            new_job = prepare_job(job)
+            if new_job:
+                new_jobs.append(new_job)
+        except Exception as e:
+            logger.exception(e)
+            continue
     
     return json.dumps({"jobs": new_jobs})
