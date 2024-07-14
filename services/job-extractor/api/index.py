@@ -7,7 +7,12 @@ def health_check():
     return "Hello World From Job Extractor Service!"
 
 def get_job_info(data):
+    logger.debug("received data")
+    logger.debug(data)
+    
     jobs = data.get("jobs")
+    
+    index = 1
     
     new_jobs = []
     for job in jobs:
@@ -15,6 +20,12 @@ def get_job_info(data):
             new_job = prepare_job(job)
             if new_job:
                 new_jobs.append(new_job)
+                
+                logger.debug("new job")
+                logger.debug(index)
+                logger.debug(new_job)
+                
+                index = index + 1
         except Exception as e:
             logger.exception(e)
             continue

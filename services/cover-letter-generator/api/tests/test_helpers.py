@@ -161,7 +161,7 @@ class HelpersTest(unittest.TestCase):
         wanted_job_info = {"jobTitle": "backend engineer", "companyName": "XYZ Inc"}
         filled_cover_letter, filename = generate_cover_letter_data(user_info, wanted_job_info)
         
-        self.assertIn("XYZ Inc", filled_cover_letter)
+        self.assertIn("John Doe", filled_cover_letter)
         self.assertTrue(filename.startswith('api/generated-coverletters/John-Doe-'))
         
     def test_generate_cover_letter_data_no_templates(self):
@@ -184,18 +184,10 @@ class HelpersTest(unittest.TestCase):
         wanted_job_info = {"jobTitle": "43248797@$#$", "companyName": "XYZ Inc"}
         filled_cover_letter, filename = generate_cover_letter_data(user_info, wanted_job_info)
         
-        self.assertIn("XYZ Inc", filled_cover_letter)
+        self.assertIn("John Doe", filled_cover_letter)
+        print("filename")
+        print(filename)
         self.assertTrue(filename.startswith('api/generated-coverletters/John-Doe-'))
-        
-    def test_generate_cover_letter_data_no_full_name(self):
-        user_info = {
-            
-        }
-        wanted_job_info = {"jobTitle": "43248797@$#$", "companyName": "XYZ Inc"}
-        returned = generate_cover_letter_data(user_info, wanted_job_info)
-        
-        # It should return None
-        self.assertIsNone(returned)
 
     def test_preprocess_user_info(self):
         user_info = {

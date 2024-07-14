@@ -420,7 +420,7 @@ def generate_cover_letter_data(user_info, wanted_job_info):
     
     user_fullname = user_info["fullName"].replace(" ", "-")
     
-    dir_path = "api/generated-coverletters/"
+    dir_path = "api/generated-coverletters"
 
     # Create directory if it does not exist
     if not os.path.exists(dir_path):
