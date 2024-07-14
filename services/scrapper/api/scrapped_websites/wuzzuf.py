@@ -94,6 +94,13 @@ def get_jobs_details(jobs):
         description = description.replace("\n\n", "")
         description = description.replace("::marker", "-")
         description = description.replace("-\n", "- ")
+        
+        job_place = None
+        if job_data.get('workplaceArrangement') and job_data['workplaceArrangement'].get('displayedName'):
+            displayed_name = job_data['workplaceArrangement']['displayedName']
+            if displayed_name == "On-site":
+                job_place = "On Site"
+                
 
         job = {
             "jobId": job['id'],
@@ -105,7 +112,7 @@ def get_jobs_details(jobs):
             "url": f"https://wuzzuf.net/{job_data['uri']}",
             "type": next((job_type for job_type in JOB_TYPE if any(job['displayedName'] == job_type for job in job_data['workTypes'])), "Other"),
             "skills": [skill['name'] for skill in job_data['keywords']],
-            "jobPlace": job_data['workplaceArrangement']['displayedName'] if job_data['workplaceArrangement'] else None,
+            "jobPlace": job_place,
             "neededExperience": job_data['workExperienceYears']['min'],
             "education": job_data['candidatePreferences']['educationLevel']['name'],
         }
