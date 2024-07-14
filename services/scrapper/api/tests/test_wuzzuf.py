@@ -90,7 +90,7 @@ class WuzzufTest(unittest.TestCase):
                 "url": "https://wuzzuf.net/jobs/software-engineer",
                 "type": "Other",
                 "skills": ["Python", "Django"],
-                "jobPlace": "On-site",
+                "jobPlace": "On Site",
                 "neededExperience": 2,
                 "education": "Bachelor's",
             }

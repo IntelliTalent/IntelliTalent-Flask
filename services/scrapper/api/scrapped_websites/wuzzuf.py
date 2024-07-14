@@ -100,6 +100,8 @@ def get_jobs_details(jobs):
             displayed_name = job_data['workplaceArrangement']['displayedName']
             if displayed_name == "On-site":
                 job_place = "On Site"
+            else:
+                job_place = displayed_name
                 
 
         job = {
