@@ -9,18 +9,18 @@ def insert_jobs(unstructured_jobs_db, jobs):
     Returns:
         None
     """
-    try:
-        # Get the unstructured jobs collection
-        unstructured_jobs_collection = unstructured_jobs_db["unstructuredjobs"]
-        
-        current_time = datetime.now(timezone.utc)
-        
-        # Add the scrappedAt field to the jobs
-        for job in jobs:
+    # Get the unstructured jobs collection
+    unstructured_jobs_collection = unstructured_jobs_db["unstructuredjobs"]
+    
+    current_time = datetime.now(timezone.utc)
+    
+    # Add the scrappedAt field to the jobs
+    for job in jobs:
+        try:
             job["scrappedAt"] = current_time
-        
-        # Insert the jobs into the collection
-        unstructured_jobs_collection.insert_many(jobs, ordered=False)
-    except Exception as e:
-        # Ignored because it is probably a common error of duplicated compound key of title, company, publishedAt
-        pass
+            
+            # Insert the job into the collection
+            unstructured_jobs_collection.insert_one(job)
+        except Exception as e:
+            # Ignored because it is probably a common error of duplicated compound key of title, company, publishedAt
+            continue

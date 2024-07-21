@@ -6,6 +6,7 @@ bs4==0.0.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
+coverage==7.5.4
 dnspython==1.16.0
 eventlet==0.33.3
 Flask==2.3.2

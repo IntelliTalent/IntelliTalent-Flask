@@ -178,11 +178,13 @@ def extract_years_of_experience(text):
     for line in matching_lines:
         matches = re.findall(r'\d+', line)
         if matches:
-            years_of_experience.append(matches)
-
+            # Convert the matches to integers and add them to the list
+            matches = [int(match) for match in matches]
+            years_of_experience.extend(matches)
+            
     if years_of_experience:
-        max_experience = int(max(years_of_experience)[0])
-        min_experience = int(min(years_of_experience)[0])
+        max_experience = max(years_of_experience)
+        min_experience = min(years_of_experience)
         return (min_experience, max_experience)
     else:
         return None
@@ -241,6 +243,10 @@ def prepare_job(unstructured_job):
     if not title:
         return None
     
+    if unstructured_job.get("jobPlace", None):
+        if unstructured_job["jobPlace"] == "On-site":
+            unstructured_job["jobPlace"] = "On Site"
+            
     structured_job = {
         "jobId": unstructured_job.get("jobId", None),
         "title": title,
@@ -284,7 +290,7 @@ def prepare_job(unstructured_job):
     if education and education != "Not Specified":
         structured_job["education"] = unstructured_job["education"]
     else:
-        # Take the minimum years of experience from the description
+        # Take the education level from the description
         education = extract_education_level(description)
         structured_job["education"] = education if education else "Not Specified"
     
