@@ -63,7 +63,7 @@
 </ol>
 <hr>
 
-<h2 href="#Description">Description</h2>
+<h2  href="#Description">Description</h2>
 <blockquote>
   <p>
   This platform was implemented for our Graduation Project by a team of 4 students.
